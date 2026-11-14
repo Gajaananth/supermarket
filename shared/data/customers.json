@@ -1,0 +1,423 @@
+[
+  {
+    "id": "cust-01",
+    "name": "Kajan Sivanesan",
+    "phone": "+94 77 123 4567",
+    "email": "kajan.siva@gmail.com",
+    "storeId": "br-btc-01",
+    "locality": "Batticaloa Town (Puliyanthivu)",
+    "address": "No. 18 Central Road, Puliyanthivu, Batticaloa",
+    "loyaltyPoints": 520,
+    "totalOrders": 24,
+    "savedAddresses": [
+      { "id": "addr-1", "label": "Home", "address": "No. 18 Central Road, Puliyanthivu, Batticaloa", "isDefault": true },
+      { "id": "addr-2", "label": "Office", "address": "Kachcheri Complex, Batticaloa", "isDefault": false }
+    ]
+  },
+  {
+    "id": "cust-02",
+    "name": "Tharshini Vijayaratnam",
+    "phone": "+94 71 234 5678",
+    "email": "tharshini.v@gmail.com",
+    "storeId": "br-btc-01",
+    "locality": "Koddaimunai",
+    "address": "No. 42 Lake Road, Koddaimunai, Batticaloa",
+    "loyaltyPoints": 410,
+    "totalOrders": 19,
+    "savedAddresses": [
+      { "id": "addr-3", "label": "Home", "address": "No. 42 Lake Road, Koddaimunai, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-03",
+    "name": "Mohamed Rizwan",
+    "phone": "+94 76 345 6789",
+    "email": "m.rizwan@outlook.com",
+    "storeId": "br-btc-02",
+    "locality": "Kattankudy",
+    "address": "No. 105 Beach Road, Kattankudy-02, Batticaloa",
+    "loyaltyPoints": 680,
+    "totalOrders": 31,
+    "savedAddresses": [
+      { "id": "addr-4", "label": "Residence", "address": "No. 105 Beach Road, Kattankudy-02, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-04",
+    "name": "Fathima Nazeera",
+    "phone": "+94 77 456 7890",
+    "email": "fathima.naz@gmail.com",
+    "storeId": "br-btc-02",
+    "locality": "Kattankudy",
+    "address": "No. 54 Mosque Street, Kattankudy-05, Batticaloa",
+    "loyaltyPoints": 350,
+    "totalOrders": 15,
+    "savedAddresses": [
+      { "id": "addr-5", "label": "Home", "address": "No. 54 Mosque Street, Kattankudy-05, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-05",
+    "name": "Anton Jeroshan",
+    "phone": "+94 77 567 8901",
+    "email": "anton.jero@yahoo.com",
+    "storeId": "br-btc-03",
+    "locality": "Eravur",
+    "address": "No. 72 Hospital Road, Eravur-03, Batticaloa",
+    "loyaltyPoints": 290,
+    "totalOrders": 12,
+    "savedAddresses": [
+      { "id": "addr-6", "label": "Home", "address": "No. 72 Hospital Road, Eravur-03, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-06",
+    "name": "Kavitha Murugesan",
+    "phone": "+94 71 678 9012",
+    "email": "kavitha.m@gmail.com",
+    "storeId": "br-btc-03",
+    "locality": "Eravur",
+    "address": "No. 29 Kalikovil Lane, Eravur, Batticaloa",
+    "loyaltyPoints": 480,
+    "totalOrders": 22,
+    "savedAddresses": [
+      { "id": "addr-7", "label": "Home", "address": "No. 29 Kalikovil Lane, Eravur, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-07",
+    "name": "Niroshan Kanapathipillai",
+    "phone": "+94 77 789 0123",
+    "email": "niro.kana@gmail.com",
+    "storeId": "br-btc-04",
+    "locality": "Valaichenai",
+    "address": "No. 14 Station Road, Valaichenai, Batticaloa",
+    "loyaltyPoints": 620,
+    "totalOrders": 28,
+    "savedAddresses": [
+      { "id": "addr-8", "label": "Home", "address": "No. 14 Station Road, Valaichenai, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-08",
+    "name": "Maria Jeroshan",
+    "phone": "+94 76 890 1234",
+    "email": "maria.j@gmail.com",
+    "storeId": "br-btc-04",
+    "locality": "Valaichenai",
+    "address": "No. 61 Church Lane, Valaichenai, Batticaloa",
+    "loyaltyPoints": 310,
+    "totalOrders": 14,
+    "savedAddresses": [
+      { "id": "addr-9", "label": "Home", "address": "No. 61 Church Lane, Valaichenai, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-09",
+    "name": "Ahamed Mansoor",
+    "phone": "+94 77 901 2345",
+    "email": "ahamed.m@gmail.com",
+    "storeId": "br-btc-05",
+    "locality": "Oddamavadi",
+    "address": "No. 33 Bridge Road, Oddamavadi-01, Batticaloa",
+    "loyaltyPoints": 540,
+    "totalOrders": 25,
+    "savedAddresses": [
+      { "id": "addr-10", "label": "Home", "address": "No. 33 Bridge Road, Oddamavadi-01, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-10",
+    "name": "Rizwana Farook",
+    "phone": "+94 71 012 3456",
+    "email": "rizwana.f@outlook.com",
+    "storeId": "br-btc-05",
+    "locality": "Oddamavadi",
+    "address": "No. 88 Post Office Lane, Oddamavadi, Batticaloa",
+    "loyaltyPoints": 220,
+    "totalOrders": 9,
+    "savedAddresses": [
+      { "id": "addr-11", "label": "Home", "address": "No. 88 Post Office Lane, Oddamavadi, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-11",
+    "name": "Tharshan Selvarajah",
+    "phone": "+94 77 112 4455",
+    "email": "tharshan.s@gmail.com",
+    "storeId": "br-btc-06",
+    "locality": "Chenkalady",
+    "address": "No. 15 Badulla Road, Chenkalady, Batticaloa",
+    "loyaltyPoints": 490,
+    "totalOrders": 21,
+    "savedAddresses": [
+      { "id": "addr-12", "label": "Home", "address": "No. 15 Badulla Road, Chenkalady, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-12",
+    "name": "Mary Roshani",
+    "phone": "+94 76 223 5566",
+    "email": "mary.rosh@gmail.com",
+    "storeId": "br-btc-06",
+    "locality": "Chenkalady",
+    "address": "No. 49 School Lane, Chenkalady, Batticaloa",
+    "loyaltyPoints": 180,
+    "totalOrders": 8,
+    "savedAddresses": [
+      { "id": "addr-13", "label": "Home", "address": "No. 49 School Lane, Chenkalady, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-13",
+    "name": "Yathushan Rasiah",
+    "phone": "+94 77 334 6677",
+    "email": "yathu.rasiah@gmail.com",
+    "storeId": "br-btc-07",
+    "locality": "Kaluwanchikudy",
+    "address": "No. 78 Hospital Junction, Kaluwanchikudy, Batticaloa",
+    "loyaltyPoints": 580,
+    "totalOrders": 27,
+    "savedAddresses": [
+      { "id": "addr-14", "label": "Home", "address": "No. 78 Hospital Junction, Kaluwanchikudy, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-14",
+    "name": "Mathushan Thambirajah",
+    "phone": "+94 71 445 7788",
+    "email": "mathu.t@gmail.com",
+    "storeId": "br-btc-07",
+    "locality": "Kaluwanchikudy",
+    "address": "No. 12 Beach View Avenue, Kaluwanchikudy, Batticaloa",
+    "loyaltyPoints": 360,
+    "totalOrders": 16,
+    "savedAddresses": [
+      { "id": "addr-15", "label": "Home", "address": "No. 12 Beach View Avenue, Kaluwanchikudy, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-15",
+    "name": "Roshan Jayaseelan",
+    "phone": "+94 77 556 8899",
+    "email": "roshan.jaya@gmail.com",
+    "storeId": "br-btc-08",
+    "locality": "Arayampathy",
+    "address": "No. 94 Temple Road, Arayampathy-01, Batticaloa",
+    "loyaltyPoints": 710,
+    "totalOrders": 33,
+    "savedAddresses": [
+      { "id": "addr-16", "label": "Home", "address": "No. 94 Temple Road, Arayampathy-01, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-16",
+    "name": "Kavitha Sivalingam",
+    "phone": "+94 76 667 9900",
+    "email": "kavitha.siva@gmail.com",
+    "storeId": "br-btc-08",
+    "locality": "Arayampathy",
+    "address": "No. 31 Navatkudah Road, Arayampathy, Batticaloa",
+    "loyaltyPoints": 270,
+    "totalOrders": 11,
+    "savedAddresses": [
+      { "id": "addr-17", "label": "Home", "address": "No. 31 Navatkudah Road, Arayampathy, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-17",
+    "name": "Mohamed Faleel",
+    "phone": "+94 77 778 0011",
+    "email": "faleel.m@gmail.com",
+    "storeId": "br-btc-09",
+    "locality": "Kiran",
+    "address": "No. 22 Coastal Road, Kiran, Batticaloa",
+    "loyaltyPoints": 390,
+    "totalOrders": 17,
+    "savedAddresses": [
+      { "id": "addr-18", "label": "Home", "address": "No. 22 Coastal Road, Kiran, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-18",
+    "name": "Tharshini Mahendran",
+    "phone": "+94 71 889 1122",
+    "email": "tharshini.m@gmail.com",
+    "storeId": "br-btc-09",
+    "locality": "Kiran",
+    "address": "No. 65 Station Lane, Kiran, Batticaloa",
+    "loyaltyPoints": 450,
+    "totalOrders": 20,
+    "savedAddresses": [
+      { "id": "addr-19", "label": "Home", "address": "No. 65 Station Lane, Kiran, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-19",
+    "name": "Niroshan Thilagarajah",
+    "phone": "+94 77 990 2233",
+    "email": "niro.thilag@gmail.com",
+    "storeId": "br-btc-10",
+    "locality": "Vellavely",
+    "address": "No. 40 Agrarian Center Road, Vellavely, Batticaloa",
+    "loyaltyPoints": 330,
+    "totalOrders": 13,
+    "savedAddresses": [
+      { "id": "addr-20", "label": "Home", "address": "No. 40 Agrarian Center Road, Vellavely, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-20",
+    "name": "Maria Anton",
+    "phone": "+94 76 001 3344",
+    "email": "maria.anton@gmail.com",
+    "storeId": "br-btc-10",
+    "locality": "Vellavely",
+    "address": "No. 11 Mandur Junction Road, Vellavely, Batticaloa",
+    "loyaltyPoints": 210,
+    "totalOrders": 10,
+    "savedAddresses": [
+      { "id": "addr-21", "label": "Home", "address": "No. 11 Mandur Junction Road, Vellavely, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-21",
+    "name": "Jeroshan Daniel",
+    "phone": "+94 77 112 3445",
+    "email": "jeroshan.d@gmail.com",
+    "storeId": "br-btc-01",
+    "locality": "Kallady",
+    "address": "No. 83 Lady Manning Bridge Road, Kallady, Batticaloa",
+    "loyaltyPoints": 560,
+    "totalOrders": 26,
+    "savedAddresses": [
+      { "id": "addr-22", "label": "Home", "address": "No. 83 Lady Manning Bridge Road, Kallady, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-22",
+    "name": "Fathima Rizwana",
+    "phone": "+94 76 223 4556",
+    "email": "fathima.riz@gmail.com",
+    "storeId": "br-btc-02",
+    "locality": "Kattankudy",
+    "address": "No. 39 New Street, Kattankudy-04, Batticaloa",
+    "loyaltyPoints": 640,
+    "totalOrders": 30,
+    "savedAddresses": [
+      { "id": "addr-23", "label": "Home", "address": "No. 39 New Street, Kattankudy-04, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-23",
+    "name": "Kajan Navaratnam",
+    "phone": "+94 71 334 5667",
+    "email": "kajan.nava@gmail.com",
+    "storeId": "br-btc-01",
+    "locality": "Thiraimadu",
+    "address": "No. 16 Housing Scheme, Thiraimadu, Batticaloa",
+    "loyaltyPoints": 280,
+    "totalOrders": 12,
+    "savedAddresses": [
+      { "id": "addr-24", "label": "Home", "address": "No. 16 Housing Scheme, Thiraimadu, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-24",
+    "name": "Ahamed Basheer",
+    "phone": "+94 77 445 6778",
+    "email": "ahamed.b@gmail.com",
+    "storeId": "br-btc-03",
+    "locality": "Eravur",
+    "address": "No. 57 Market Road, Eravur-02, Batticaloa",
+    "loyaltyPoints": 420,
+    "totalOrders": 18,
+    "savedAddresses": [
+      { "id": "addr-25", "label": "Home", "address": "No. 57 Market Road, Eravur-02, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-25",
+    "name": "Tharshan Yogarajah",
+    "phone": "+94 76 556 7889",
+    "email": "tharshan.yoga@gmail.com",
+    "storeId": "br-btc-04",
+    "locality": "Valaichenai",
+    "address": "No. 28 Main Road, Valaichenai, Batticaloa",
+    "loyaltyPoints": 370,
+    "totalOrders": 16,
+    "savedAddresses": [
+      { "id": "addr-26", "label": "Home", "address": "No. 28 Main Road, Valaichenai, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-26",
+    "name": "Nazeera Mohamed",
+    "phone": "+94 71 667 8990",
+    "email": "nazeera.m@gmail.com",
+    "storeId": "br-btc-05",
+    "locality": "Oddamavadi",
+    "address": "No. 74 Riverbank Road, Oddamavadi, Batticaloa",
+    "loyaltyPoints": 310,
+    "totalOrders": 13,
+    "savedAddresses": [
+      { "id": "addr-27", "label": "Home", "address": "No. 74 Riverbank Road, Oddamavadi, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-27",
+    "name": "Mathushan Sivalingam",
+    "phone": "+94 77 778 9001",
+    "email": "mathu.siva@gmail.com",
+    "storeId": "br-btc-06",
+    "locality": "Chenkalady",
+    "address": "No. 90 Agricultural Lane, Chenkalady, Batticaloa",
+    "loyaltyPoints": 490,
+    "totalOrders": 22,
+    "savedAddresses": [
+      { "id": "addr-28", "label": "Home", "address": "No. 90 Agricultural Lane, Chenkalady, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-28",
+    "name": "Mary Antonette",
+    "phone": "+94 76 889 0112",
+    "email": "mary.ant@gmail.com",
+    "storeId": "br-btc-07",
+    "locality": "Kaluwanchikudy",
+    "address": "No. 36 Convent Road, Kaluwanchikudy, Batticaloa",
+    "loyaltyPoints": 530,
+    "totalOrders": 23,
+    "savedAddresses": [
+      { "id": "addr-29", "label": "Home", "address": "No. 36 Convent Road, Kaluwanchikudy, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-29",
+    "name": "Kavitha Thangarajah",
+    "phone": "+94 71 990 1223",
+    "email": "kavitha.thanga@gmail.com",
+    "storeId": "br-btc-08",
+    "locality": "Arayampathy",
+    "address": "No. 102 Beach Road, Arayampathy, Batticaloa",
+    "loyaltyPoints": 440,
+    "totalOrders": 19,
+    "savedAddresses": [
+      { "id": "addr-30", "label": "Home", "address": "No. 102 Beach Road, Arayampathy, Batticaloa", "isDefault": true }
+    ]
+  },
+  {
+    "id": "cust-30",
+    "name": "Roshan Peter",
+    "phone": "+94 77 001 2334",
+    "email": "roshan.peter@gmail.com",
+    "storeId": "br-btc-01",
+    "locality": "Mamangam",
+    "address": "No. 47 Temple Road, Mamangam, Batticaloa",
+    "loyaltyPoints": 610,
+    "totalOrders": 27,
+    "savedAddresses": [
+      { "id": "addr-31", "label": "Home", "address": "No. 47 Temple Road, Mamangam, Batticaloa", "isDefault": true }
+    ]
+  }
+]

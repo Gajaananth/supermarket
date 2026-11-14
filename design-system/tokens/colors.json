@@ -1,0 +1,54 @@
+{
+  "brand": {
+    "primaryRed": "#E4002B",
+    "deepRed": "#B80022",
+    "softRed": "#FFE9EC",
+    "accentYellow": "#FFC20E",
+    "softYellow": "#FFF6D6",
+    "canvas": "#FFFDFD"
+  },
+  "text": {
+    "primary": "#1F2430",
+    "secondary": "#6B7280",
+    "muted": "#9CA3AF",
+    "inverse": "#FFFFFF",
+    "brandAccent": "#E4002B"
+  },
+  "glass": {
+    "cardSurface": "rgba(255, 255, 255, 0.68)",
+    "elevatedSurface": "rgba(255, 255, 255, 0.84)",
+    "subtleSurface": "rgba(255, 255, 255, 0.50)",
+    "borderSubtle": "rgba(255, 255, 255, 0.75)",
+    "borderHighlight": "rgba(255, 255, 255, 0.90)",
+    "borderRed": "rgba(228, 0, 43, 0.35)",
+    "frostGlow": "rgba(228, 0, 43, 0.08)"
+  },
+  "background": {
+    "canvas": "#FFFDFD",
+    "secondaryCanvas": "#FFF9F9",
+    "atmosphericGradient": "linear-gradient(135deg, #FFFDFD 0%, #FFE9EC 50%, #FFF9F9 100%)",
+    "glowGradient": "radial-gradient(circle at 15% 15%, rgba(228, 0, 43, 0.18) 0%, transparent 40%), radial-gradient(circle at 85% 85%, rgba(255, 194, 14, 0.14) 0%, transparent 45%)"
+  },
+  "status": {
+    "success": {
+      "main": "#10B981",
+      "light": "#ECFDF5",
+      "border": "rgba(16, 185, 129, 0.3)"
+    },
+    "warning": {
+      "main": "#F59E0B",
+      "light": "#FFFBEB",
+      "border": "rgba(245, 158, 11, 0.3)"
+    },
+    "error": {
+      "main": "#991B1B",
+      "light": "#FEF2F2",
+      "border": "rgba(153, 27, 27, 0.3)"
+    },
+    "info": {
+      "main": "#2563EB",
+      "light": "#EFF6FF",
+      "border": "rgba(37, 99, 235, 0.3)"
+    }
+  }
+}

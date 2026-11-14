@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="360" viewBox="0 0 800 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="360" rx="28" fill="#14532D" />
+  <circle cx="200" cy="180" r="180" fill="#16A34A" filter="blur(80px)" opacity="0.45" />
+  <circle cx="650" cy="200" r="200" fill="#E4002B" filter="blur(90px)" opacity="0.25" />
+  <g transform="translate(60, 48)">
+    <rect width="180" height="30" rx="15" fill="rgba(34, 197, 94, 0.25)" stroke="#4ADE80" stroke-width="1.5" />
+    <text x="90" y="19" font-family="sans-serif" font-size="11" font-weight="800" fill="#86EFAC" text-anchor="middle">100% FARM HARVEST</text>
+  </g>
+  <text x="60" y="130" font-family="sans-serif" font-size="34" font-weight="900" fill="#FFFFFF">Fresh Garden Veggies</text>
+  <text x="60" y="170" font-family="sans-serif" font-size="15" font-weight="500" fill="#DCFCE7">Delivered cold-chain fresh to your doorstep within 30 minutes.</text>
+</svg>

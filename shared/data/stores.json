@@ -1,0 +1,212 @@
+[
+  {
+    "id": "br-btc-01",
+    "name": "BuyMe Batticaloa Town",
+    "code": "BM-S01",
+    "locality": "Batticaloa Town (Puliyanthivu)",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 45 Main Street, Puliyanthivu, Batticaloa",
+    "coordinates": { "lat": 7.7170, "lng": 81.6990 },
+    "contact": "+94 65 222 4101",
+    "openingHours": "07:00 AM - 10:00 PM",
+    "deliveryRadiusKm": 10,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Kajan Sivanesan",
+      "phone": "+94 77 210 1122",
+      "email": "kajan.s@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-02",
+    "name": "BuyMe Kattankudy",
+    "code": "BM-S02",
+    "locality": "Kattankudy",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 128 Beach Road, Kattankudy-03, Batticaloa",
+    "coordinates": { "lat": 7.6780, "lng": 81.7240 },
+    "contact": "+94 65 224 8202",
+    "openingHours": "07:00 AM - 10:30 PM",
+    "deliveryRadiusKm": 8,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Mohamed Ahamed",
+      "phone": "+94 76 345 9911",
+      "email": "m.ahamed@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-03",
+    "name": "BuyMe Eravur",
+    "code": "BM-S03",
+    "locality": "Eravur",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 84 Market Junction, Eravur-01, Batticaloa",
+    "coordinates": { "lat": 7.7760, "lng": 81.6030 },
+    "contact": "+94 65 225 3303",
+    "openingHours": "07:00 AM - 10:00 PM",
+    "deliveryRadiusKm": 8,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Anton Jeroshan",
+      "phone": "+94 77 412 8833",
+      "email": "anton.j@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-04",
+    "name": "BuyMe Valaichenai",
+    "code": "BM-S04",
+    "locality": "Valaichenai",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 19 Station Road, Valaichenai, Batticaloa",
+    "coordinates": { "lat": 7.9250, "lng": 81.5320 },
+    "contact": "+94 65 225 7404",
+    "openingHours": "07:00 AM - 09:30 PM",
+    "deliveryRadiusKm": 9,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Niroshan Kanapathipillai",
+      "phone": "+94 71 520 7744",
+      "email": "niroshan.k@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-05",
+    "name": "BuyMe Oddamavadi",
+    "code": "BM-S05",
+    "locality": "Oddamavadi",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 62 Bridge View Road, Oddamavadi, Batticaloa",
+    "coordinates": { "lat": 7.9310, "lng": 81.5180 },
+    "contact": "+94 65 225 9505",
+    "openingHours": "07:00 AM - 10:00 PM",
+    "deliveryRadiusKm": 8,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Rizwan Faleel",
+      "phone": "+94 76 630 1155",
+      "email": "rizwan.f@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-06",
+    "name": "BuyMe Chenkalady",
+    "code": "BM-S06",
+    "locality": "Chenkalady",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 33 Badulla Road Junction, Chenkalady, Batticaloa",
+    "coordinates": { "lat": 7.7940, "lng": 81.5780 },
+    "contact": "+94 65 226 1606",
+    "openingHours": "07:00 AM - 09:30 PM",
+    "deliveryRadiusKm": 8,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Tharshan Selvarajah",
+      "phone": "+94 77 740 2266",
+      "email": "tharshan.s@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-07",
+    "name": "BuyMe Kaluwanchikudy",
+    "code": "BM-S07",
+    "locality": "Kaluwanchikudy",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 112 Main Street, Kaluwanchikudy, Batticaloa",
+    "coordinates": { "lat": 7.5240, "lng": 81.7920 },
+    "contact": "+94 65 227 2707",
+    "openingHours": "07:00 AM - 09:30 PM",
+    "deliveryRadiusKm": 9,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Yathushan Rasiah",
+      "phone": "+94 77 850 3377",
+      "email": "yathushan.r@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-08",
+    "name": "BuyMe Arayampathy",
+    "code": "BM-S08",
+    "locality": "Arayampathy",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 76 Temple Road, Arayampathy-02, Batticaloa",
+    "coordinates": { "lat": 7.6470, "lng": 81.7450 },
+    "contact": "+94 65 228 3808",
+    "openingHours": "07:00 AM - 09:30 PM",
+    "deliveryRadiusKm": 7,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Kavitha Murugesan",
+      "phone": "+94 71 960 4488",
+      "email": "kavitha.m@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-09",
+    "name": "BuyMe Kiran",
+    "code": "BM-S09",
+    "locality": "Kiran",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 24 Coastal Highway, Kiran, Batticaloa",
+    "coordinates": { "lat": 7.8420, "lng": 81.5620 },
+    "contact": "+94 65 229 4909",
+    "openingHours": "07:30 AM - 09:00 PM",
+    "deliveryRadiusKm": 7,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Roshan Jayaseelan",
+      "phone": "+94 77 101 5599",
+      "email": "roshan.j@buyme.lk"
+    }
+  },
+  {
+    "id": "br-btc-10",
+    "name": "BuyMe Vellavely",
+    "code": "BM-S10",
+    "locality": "Vellavely",
+    "district": "Batticaloa",
+    "province": "Eastern Province",
+    "country": "Sri Lanka",
+    "address": "No. 51 Agricultural Hub Road, Vellavely, Batticaloa",
+    "coordinates": { "lat": 7.4290, "lng": 81.7480 },
+    "contact": "+94 65 230 5010",
+    "openingHours": "07:30 AM - 08:30 PM",
+    "deliveryRadiusKm": 10,
+    "deliveryFeeLkr": 250,
+    "isActive": true,
+    "manager": {
+      "name": "Mathushan Thambirajah",
+      "phone": "+94 77 212 6600",
+      "email": "mathushan.t@buyme.lk"
+    }
+  }
+]

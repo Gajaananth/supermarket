@@ -1,0 +1,66 @@
+[
+  {
+    "id": "cat-produce",
+    "name": "Fresh Fruits & Vegetables",
+    "nameTa": "பழங்கள் & காய்கறிகள்",
+    "icon": "carrot",
+    "color": "#16A34A",
+    "glow": "#DCFCE7"
+  },
+  {
+    "id": "cat-staples",
+    "name": "Rice, Grains & Flour",
+    "nameTa": "அரிசி & தானியங்கள்",
+    "icon": "wheat",
+    "color": "#D97706",
+    "glow": "#FEF3C7"
+  },
+  {
+    "id": "cat-dairy",
+    "name": "Dairy, Eggs & Chilled",
+    "nameTa": "பால் & முட்டை",
+    "icon": "milk",
+    "color": "#2563EB",
+    "glow": "#EFF6FF"
+  },
+  {
+    "id": "cat-seafood",
+    "name": "Lagoon & Sea Fish",
+    "nameTa": "மீன் & கடல் உணவு",
+    "icon": "fish",
+    "color": "#0284C7",
+    "glow": "#E0F2FE"
+  },
+  {
+    "id": "cat-spices",
+    "name": "Cooking Oils & Spices",
+    "nameTa": "மசாலா & சமையல் எண்ணெய்",
+    "icon": "flame",
+    "color": "#DC2626",
+    "glow": "#FEE2E2"
+  },
+  {
+    "id": "cat-beverages",
+    "name": "Ceylon Tea & Drinks",
+    "nameTa": "தேயிலை & பானங்கள்",
+    "icon": "coffee",
+    "color": "#B45309",
+    "glow": "#FEF3C7"
+  },
+  {
+    "id": "cat-bakery",
+    "name": "Bakery & Biscuits",
+    "nameTa": "பேக்கரி & பிஸ்கட்",
+    "icon": "cookie",
+    "color": "#CA8A04",
+    "glow": "#FEF9C3"
+  },
+  {
+    "id": "cat-household",
+    "name": "Household & Personal",
+    "nameTa": "வீட்டு பராமரிப்பு",
+    "icon": "sparkles",
+    "color": "#9333EA",
+    "glow": "#F3E8FF"
+  }
+]

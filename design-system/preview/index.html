@@ -1,0 +1,642 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BuyMe Supermarket — Premium Glassmorphism Design System (Batticaloa District)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="ice-canvas">
+  <!-- Atmospheric background glowing orbs -->
+  <div class="ambient-glow orb-1" aria-hidden="true"></div>
+  <div class="ambient-glow orb-2" aria-hidden="true"></div>
+  <div class="ambient-glow orb-3" aria-hidden="true"></div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="glass-navbar">
+    <div class="nav-container">
+      <div class="brand-cluster">
+        <div class="brand-icon-glass">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
+            <path d="M2 7h20"/>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-title">BuyMe</span>
+          <span class="brand-badge">DESIGN SYSTEM v1.0</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#tokens" class="nav-link active">Tokens</a>
+        <a href="#typography" class="nav-link">Typography</a>
+        <a href="#components" class="nav-link">Components</a>
+        <a href="#mobile-preview" class="nav-link">Mobile Preview</a>
+        <a href="#specs" class="nav-link">Specs</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-glass-icon" id="openModalBtn" aria-label="Open Interactive Dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+        <button type="button" class="btn-primary-neon" id="cartTriggerBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="8" cy="21" r="1"/>
+            <circle cx="19" cy="21" r="1"/>
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+          </svg>
+          <span>Demo Cart</span>
+          <span class="badge-cart-count" id="headerCartCount">3</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="main-content">
+    <section class="hero-section">
+      <div class="hero-pill-badge">
+        <span class="glow-dot"></span>
+        <span>PREMIUM SUPERMARKET TECHNOLOGY</span>
+      </div>
+      <h1 class="hero-title">Neon Blue + Ice White + Translucent Glass</h1>
+      <p class="hero-subtitle">
+        Visual foundation for Sri Lanka's multi-store grocery delivery ecosystem. Architected for 
+        Customer Mobile App, Rider Mobile App, Admin Mobile App, and Admin Web Dashboard.
+      </p>
+
+      <div class="hero-metrics-grid">
+        <div class="glass-card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Demo Stores</span>
+            <span class="badge-status success">Active Live</span>
+          </div>
+          <div class="metric-value">10</div>
+          <div class="metric-sub">Batticaloa District Superstore Hubs</div>
+        </div>
+
+        <div class="glass-card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Curated Catalog</span>
+            <span class="badge-status info">LKR Priced</span>
+          </div>
+          <div class="metric-value">21+</div>
+          <div class="metric-sub">6 Core Grocery Categories</div>
+        </div>
+
+        <div class="glass-card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Fidelity Level</span>
+            <span class="badge-status brand">Pixel-Perfect</span>
+          </div>
+          <div class="metric-value">100%</div>
+          <div class="metric-sub">Glassmorphism & Micro-animations</div>
+        </div>
+
+        <div class="glass-card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Platform Targets</span>
+            <span class="badge-status warning">Cross-Device</span>
+          </div>
+          <div class="metric-value">4 Apps</div>
+          <div class="metric-sub">iOS • Android • Web Admin</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: Color Tokens -->
+    <section id="tokens" class="section-container">
+      <div class="section-heading-wrap">
+        <h2 class="section-title">1. Color Palette Tokens</h2>
+        <p class="section-desc">Strict adherence to the corporate guidelines: #168BFF primary neon blue, #0866CC deep blue, #F7FAFF ice canvas, and delicate frosted white surfaces.</p>
+      </div>
+
+      <div class="swatches-grid">
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #168BFF;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Primary Neon Blue</div>
+            <div class="swatch-hex">#168BFF</div>
+            <div class="swatch-role">Primary CTAs, Active States, Key Highlights</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #0866CC;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Deep Blue</div>
+            <div class="swatch-hex">#0866CC</div>
+            <div class="swatch-role">Gradients, Pressed Buttons, Brand Accents</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #F7FAFF; border: 1px solid #E2E8F0;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Ice White</div>
+            <div class="swatch-hex">#F7FAFF</div>
+            <div class="swatch-role">Main App Background & Canvas</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #EAF3FF; border: 1px solid #CBD5E1;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Soft Blue</div>
+            <div class="swatch-hex">#EAF3FF</div>
+            <div class="swatch-role">Secondary Pills, Subtle Hover Fills</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: rgba(255, 255, 255, 0.70); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.75);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Light Glass Surface</div>
+            <div class="swatch-hex">rgba(255,255,255,0.70)</div>
+            <div class="swatch-role">Card Surfaces, Floating Modals, Navbars</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #10243B;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Dark Navy Text</div>
+            <div class="swatch-hex">#10243B</div>
+            <div class="swatch-role">Headings, High-Contrast Typography</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #62748A;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Secondary Slate Text</div>
+            <div class="swatch-hex">#62748A</div>
+            <div class="swatch-role">Labels, Meta Info, Descriptions</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #10B981;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Success (Muted Green)</div>
+            <div class="swatch-hex">#10B981</div>
+            <div class="swatch-role">Delivered, In-Stock, Positive Trends</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #F59E0B;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Warning (Soft Amber)</div>
+            <div class="swatch-hex">#F59E0B</div>
+            <div class="swatch-role">Low Stock, Preparing Order State</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #EF4444;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Error (Restrained Red)</div>
+            <div class="swatch-hex">#EF4444</div>
+            <div class="swatch-role">Out of Stock, Cancelled Orders, Errors</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Typography -->
+    <section id="typography" class="section-container">
+      <div class="section-heading-wrap">
+        <h2 class="section-title">2. Typography Hierarchy</h2>
+        <p class="section-desc">Loaded via Google Fonts: <strong>Manrope</strong> for premium executive titles, metrics, and currency, paired with <strong>DM Sans</strong> for readable, human body text.</p>
+      </div>
+
+      <div class="glass-card typography-card">
+        <div class="typo-row">
+          <div class="typo-meta">
+            <span class="typo-tag">Display 1</span>
+            <span class="typo-specs">Manrope Bold 700 • 36px</span>
+          </div>
+          <div class="typo-sample font-manrope font-bold text-3xl">
+            Freshness Delivered Across Sri Lanka
+          </div>
+        </div>
+
+        <div class="typo-row">
+          <div class="typo-meta">
+            <span class="typo-tag">Heading 2</span>
+            <span class="typo-specs">Manrope SemiBold 600 • 24px</span>
+          </div>
+          <div class="typo-sample font-manrope font-semibold text-2xl">
+            Araliya Keeri Samba Rice (5 kg) — LKR 1,450.00
+          </div>
+        </div>
+
+        <div class="typo-row">
+          <div class="typo-meta">
+            <span class="typo-tag">Body Regular</span>
+            <span class="typo-specs">DM Sans Regular 400 • 16px</span>
+          </div>
+          <div class="typo-sample font-dmsans text-base text-secondary">
+            Carefully harvested from local farms in Polonnaruwa and Nuwara Eliya. Packed with temperature-monitored cold chain delivery right to your doorstep within 45 minutes.
+          </div>
+        </div>
+
+        <div class="typo-row">
+          <div class="typo-meta">
+            <span class="typo-tag">Stats & Numbers</span>
+            <span class="typo-specs">Manrope ExtraBold 800 • 28px</span>
+          </div>
+          <div class="typo-sample font-manrope font-extrabold text-2xl text-neon">
+            LKR 284,500.00 <span class="badge-status success">+18.4% this week</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Reusable Interactive Glass Components -->
+    <section id="components" class="section-container">
+      <div class="section-heading-wrap">
+        <h2 class="section-title">3. Reusable Glassmorphism UI Components</h2>
+        <p class="section-desc">Interactive building blocks: Buttons, Inputs, Category Chips, Metric Badges, and Product Cards with working local cart interactions.</p>
+      </div>
+
+      <!-- Controls & Filters Showcase -->
+      <div class="components-columns-grid">
+        <!-- Column 1: Buttons & Inputs -->
+        <div class="glass-card component-box">
+          <h3 class="component-box-title">Interactive Buttons & Form Inputs</h3>
+          
+          <div class="button-group-showcase">
+            <button type="button" class="btn-primary-neon" onclick="showToast('Primary Action Executed!')">
+              Primary Neon Button
+            </button>
+            <button type="button" class="btn-glass-secondary" onclick="showToast('Secondary Glass Clicked!')">
+              Glass Elevated Button
+            </button>
+            <button type="button" class="btn-glass-outline" onclick="showToast('Outline Button Clicked!')">
+              Delicate Outline
+            </button>
+            <button type="button" class="btn-glass-danger" onclick="showToast('Destructive Action simulated', 'error')">
+              Restrained Red
+            </button>
+          </div>
+
+          <div class="input-showcase">
+            <label class="form-label" for="demoSearch">Glass Search Input</label>
+            <div class="input-glass-wrap">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+              <input type="text" id="demoSearch" class="input-glass" placeholder="Search rice, Ambewela milk, spices..." oninput="handleSearch(this.value)">
+              <button type="button" class="input-clear-btn" aria-label="Clear" onclick="clearSearch()">×</button>
+            </div>
+            <span class="form-helper">Real-time local filter preview enabled</span>
+          </div>
+
+          <!-- Status Badges -->
+          <div class="status-badges-wrap">
+            <span class="form-label">System Status Badges</span>
+            <div class="badge-row">
+              <span class="badge-status success">Delivered</span>
+              <span class="badge-status brand">Out for Delivery</span>
+              <span class="badge-status warning">Preparing</span>
+              <span class="badge-status info">Confirmed</span>
+              <span class="badge-status error">Cancelled</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Category Chips & Interactive Mini Simulator -->
+        <div class="glass-card component-box">
+          <h3 class="component-box-title">Category Navigation Chips</h3>
+          <p class="component-box-desc">Single-select active states with soft-blue glow and fluid transitions:</p>
+          
+          <div class="chips-container" id="categoryChips">
+            <button type="button" class="glass-chip active" onclick="selectCategory(this, 'all')">
+              <span>All Products</span>
+              <span class="chip-count">21</span>
+            </button>
+            <button type="button" class="glass-chip" onclick="selectCategory(this, 'cat-001')">
+              <span>Fresh Produce</span>
+              <span class="chip-count">4</span>
+            </button>
+            <button type="button" class="glass-chip" onclick="selectCategory(this, 'cat-002')">
+              <span>Dairy & Eggs</span>
+              <span class="chip-count">4</span>
+            </button>
+            <button type="button" class="glass-chip" onclick="selectCategory(this, 'cat-003')">
+              <span>Bakery & Staples</span>
+              <span class="chip-count">3</span>
+            </button>
+            <button type="button" class="glass-chip" onclick="selectCategory(this, 'cat-004')">
+              <span>Cooking Essentials</span>
+              <span class="chip-count">5</span>
+            </button>
+            <button type="button" class="glass-chip" onclick="selectCategory(this, 'cat-005')">
+              <span>Snacks & Biscuits</span>
+              <span class="chip-count">2</span>
+            </button>
+          </div>
+
+          <!-- Glass Depth & Opacity Inspector -->
+          <div class="glass-inspector-box">
+            <div class="inspector-header">
+              <span class="form-label">Live Glassmorphism Inspector</span>
+              <span class="inspector-badge" id="blurValLabel">Blur: 16px</span>
+            </div>
+            <input type="range" min="4" max="32" value="16" id="blurSlider" oninput="adjustGlassBlur(this.value)" class="slider-control" aria-label="Adjust blur radius">
+            <div class="inspector-footer">
+              <small>Simulates readability under varying backdrop filters</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Cards Section -->
+      <div class="products-showcase-wrap">
+        <div class="products-header">
+          <h3 class="component-box-title">Sample Premium Product Cards (Interactive Local Cart)</h3>
+          <span class="badge-status info">Interactive — Click Add to Cart</span>
+        </div>
+
+        <div class="products-grid" id="productGrid">
+          <!-- Populated by JavaScript with authentic Sri Lankan grocery data -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Mobile Application Visual Preview -->
+    <section id="mobile-preview" class="section-container">
+      <div class="section-heading-wrap">
+        <h2 class="section-title">4. Multi-Device Mobile Screen Archetypes</h2>
+        <p class="section-desc">Previewing the unified visual language across Customer, Rider, and Admin interfaces.</p>
+      </div>
+
+      <div class="device-mockups-grid">
+        <!-- Mockup 1: Customer Mobile App (Home & Cart) -->
+        <div class="device-frame">
+          <div class="device-speaker"></div>
+          <div class="device-screen">
+            <div class="mobile-header">
+              <div class="mobile-location-tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#168BFF" stroke-width="2">
+                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>BuyMe Batticaloa Town (Puliyanthivu)</span>
+              </div>
+              <div class="mobile-avatar"></div>
+            </div>
+
+            <div class="mobile-search-mock">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#62748A" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Search fresh groceries...</span>
+            </div>
+
+            <div class="mobile-promo-banner">
+              <span class="promo-tag">FARM FRESH PROMISE</span>
+              <h4>Free Express Delivery on orders over LKR 3,000</h4>
+            </div>
+
+            <div class="mobile-product-mini">
+              <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=150&q=80" alt="Ambewela Milk" class="mini-prod-img">
+              <div class="mini-prod-info">
+                <span class="mini-prod-name">Ambewela Fresh Milk</span>
+                <span class="mini-prod-price">LKR 540.00</span>
+              </div>
+              <button type="button" class="mini-add-btn">+</button>
+            </div>
+
+            <div class="mobile-nav-bar">
+              <div class="nav-item active">Home</div>
+              <div class="nav-item">Catalog</div>
+              <div class="nav-item">Orders</div>
+              <div class="nav-item">Profile</div>
+            </div>
+          </div>
+          <div class="device-caption">Customer Mobile App (Flutter)</div>
+        </div>
+
+        <!-- Mockup 2: Rider Mobile App (Active Dispatch) -->
+        <div class="device-frame">
+          <div class="device-speaker"></div>
+          <div class="device-screen">
+            <div class="rider-top-status">
+              <span class="rider-status-dot online"></span>
+              <span class="rider-status-text">ONLINE • BATTICALOA FLEET</span>
+            </div>
+
+            <div class="rider-dispatch-card glass-card">
+              <span class="badge-status brand">NEW ORDER DISPATCH</span>
+              <div class="rider-order-no">#DMB-2026-901</div>
+              <div class="rider-route-points">
+                <div class="route-point">
+                  <span class="point-dot pickup"></span>
+                  <div>
+                    <div class="point-title">BuyMe Batticaloa Town Hub</div>
+                    <div class="point-sub">14/2 Central Road, Puliyanthivu</div>
+                  </div>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-point">
+                  <span class="point-dot dropoff"></span>
+                  <div>
+                    <div class="point-title">Puliyanthivu Residential Lane</div>
+                    <div class="point-sub">Customer: Kajan Sivanesan (3 Items)</div>
+                  </div>
+                </div>
+              </div>
+              <div class="rider-earning-tag">Est. Earning: LKR 400.00</div>
+              <button type="button" class="btn-primary-neon btn-full" onclick="showToast('Demo Delivery Accepted!')">Accept Delivery</button>
+            </div>
+
+            <div class="mobile-nav-bar">
+              <div class="nav-item active">Dispatch</div>
+              <div class="nav-item">History</div>
+              <div class="nav-item">Earnings</div>
+              <div class="nav-item">Profile</div>
+            </div>
+          </div>
+          <div class="device-caption">Rider Mobile App (Flutter)</div>
+        </div>
+
+        <!-- Mockup 3: Admin Mobile App (Store Metrics) -->
+        <div class="device-frame">
+          <div class="device-speaker"></div>
+          <div class="device-screen">
+            <div class="admin-mobile-header">
+              <span class="brand-title" style="font-size: 1rem;">BuyMe Admin</span>
+              <span class="badge-status success">10 Stores Online</span>
+            </div>
+
+            <div class="admin-kpi-row">
+              <div class="admin-kpi-chip">
+                <small>Today Revenue</small>
+                <strong>LKR 184.5K</strong>
+              </div>
+              <div class="admin-kpi-chip">
+                <small>Active Orders</small>
+                <strong>22 Live</strong>
+              </div>
+            </div>
+
+            <div class="admin-orders-preview glass-card">
+              <div class="admin-order-item">
+                <div>
+                  <div class="font-bold">#DMB-901 • LKR 5,190</div>
+                  <small class="text-secondary">Batticaloa Town • Out for delivery</small>
+                </div>
+                <span class="badge-status brand">Rider: Kajan S.</span>
+              </div>
+              <div class="admin-order-item">
+                <div>
+                  <div class="font-bold">#DMB-902 • LKR 2,950</div>
+                  <small class="text-secondary">Kattankudy • Preparing</small>
+                </div>
+                <span class="badge-status warning">Assign</span>
+              </div>
+            </div>
+
+            <div class="mobile-nav-bar">
+              <div class="nav-item active">Overview</div>
+              <div class="nav-item">Orders</div>
+              <div class="nav-item">Stock</div>
+              <div class="nav-item">Settings</div>
+            </div>
+          </div>
+          <div class="device-caption">Admin Mobile App (Flutter)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Specification Summary -->
+    <section id="specs" class="section-container">
+      <div class="glass-card specs-summary-card">
+        <div class="specs-grid">
+          <div>
+            <h3 class="specs-heading">Architecture & Rules</h3>
+            <ul class="specs-list">
+              <li><strong>Frontend Only:</strong> Mock repository pattern decoupled from UI widgets.</li>
+              <li><strong>Currency:</strong> Sri Lankan Rupees (LKR) throughout all workflows.</li>
+              <li><strong>Design Tokens:</strong> Single source of truth synchronized across CSS & Dart.</li>
+              <li><strong>Glass Surfaces:</strong> Frosted multi-layer blur with high text contrast.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="specs-heading">Phase 1 Delivery Status</h3>
+            <ul class="specs-list">
+              <li>✅ Monorepo Directory Architecture Configured</li>
+              <li>✅ Design Tokens (Colors, Typography, Spacing, Glass) Established</li>
+              <li>✅ Google Fonts (Manrope & DM Sans) Integrated</li>
+              <li>✅ Centralized Mock Data Layer (Stores, Products, Riders, Orders) Seeded</li>
+              <li>✅ Interactive Design System Showcase Deployed</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Interactive Native HTML5 Modal Dialog (Modern Web Guidance Compliant) -->
+  <dialog id="interactiveDialog" class="glass-modal" aria-labelledby="dialogTitle">
+    <div class="modal-header">
+      <div>
+        <h3 id="dialogTitle" class="modal-title">Design Foundation Settings</h3>
+        <p class="modal-sub">Prototype demonstration configuration & store selector</p>
+      </div>
+      <button type="button" class="btn-close-modal" id="closeDialogBtn" aria-label="Close dialog">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-field">
+        <label class="form-label" for="activeStoreSelect">Active Prototype Store</label>
+        <select id="activeStoreSelect" class="input-glass select-glass">
+          <option value="DMB-01">BuyMe Batticaloa Town (Puliyanthivu)</option>
+          <option value="DMB-02">BuyMe Kattankudy (Main Street)</option>
+          <option value="DMB-03">BuyMe Eravur (Chenkalady Road)</option>
+          <option value="DMB-04">BuyMe Valaichenai (Main Street)</option>
+          <option value="DMB-05">BuyMe Oddamavadi (Bridge View Road)</option>
+          <option value="DMB-06">BuyMe Chenkalady (Badulla Road)</option>
+          <option value="DMB-07">BuyMe Kaluwanchikudy (Main Street)</option>
+          <option value="DMB-08">BuyMe Arayampathy (Hospital Road)</option>
+          <option value="DMB-09">BuyMe Kiran (Central Road)</option>
+          <option value="DMB-10">BuyMe Vellavely (Mandur Road)</option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label class="form-label">Simulation Mode</label>
+        <div class="sim-pill-group">
+          <label class="sim-pill active">
+            <input type="radio" name="simMode" value="fast" checked>
+            <span>Fast Prototype (Instant feedback)</span>
+          </label>
+          <label class="sim-pill">
+            <input type="radio" name="simMode" value="animated">
+            <span>Realistic Animation (45s cycle)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="dialog-notice">
+        <strong>Notice:</strong> This is a client presentation prototype. All transactions, rider telemetry, and orders operate entirely on local mock state.
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-glass-secondary" id="cancelDialogBtn">Close</button>
+      <button type="button" class="btn-primary-neon" id="saveDialogBtn">Apply Configuration</button>
+    </div>
+  </dialog>
+
+  <!-- Interactive Demo Cart Slide-over Sheet -->
+  <aside id="cartDrawer" class="cart-drawer glass-drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-title-cluster">
+        <h3>Shopping Cart</h3>
+        <span class="badge-status brand" id="cartBadgeCount">3 items</span>
+      </div>
+      <button type="button" class="btn-close-modal" id="closeCartBtn" aria-label="Close Cart">×</button>
+    </div>
+
+    <div class="drawer-items" id="cartItemsList">
+      <!-- Populated dynamically by JS -->
+    </div>
+
+    <div class="drawer-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">LKR 0.00</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>Delivery Fee (Batticaloa Standard)</span>
+        <span id="cartDeliveryFee">LKR 250.00</span>
+      </div>
+      <div class="cart-summary-row cart-total-row">
+        <span>Total (LKR)</span>
+        <strong id="cartGrandTotal">LKR 0.00</strong>
+      </div>
+      <button type="button" class="btn-primary-neon btn-full" onclick="showToast('Proceeding to Simulated Checkout...', 'info')">
+        Proceed to Checkout (Demo)
+      </button>
+    </div>
+  </aside>
+
+  <!-- Live Toast Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

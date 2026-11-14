@@ -1,0 +1,308 @@
+[
+  {
+    "productId": "prod-001",
+    "productName": "Eastern Star Batticaloa Red Raw Rice (5kg)",
+    "safetyStock": 20,
+    "unit": "5 kg bag",
+    "storeStock": {
+      "br-btc-01": 35,
+      "br-btc-02": 28,
+      "br-btc-03": 22,
+      "br-btc-04": 20,
+      "br-btc-05": 18,
+      "br-btc-06": 15,
+      "br-btc-07": 16,
+      "br-btc-08": 14,
+      "br-btc-09": 10,
+      "br-btc-10": 7
+    }
+  },
+  {
+    "productId": "prod-002",
+    "productName": "Araliya Keeri Samba Premium Rice (5kg)",
+    "safetyStock": 25,
+    "unit": "5 kg pack",
+    "storeStock": {
+      "br-btc-01": 45,
+      "br-btc-02": 38,
+      "br-btc-03": 25,
+      "br-btc-04": 30,
+      "br-btc-05": 22,
+      "br-btc-06": 20,
+      "br-btc-07": 24,
+      "br-btc-08": 18,
+      "br-btc-09": 10,
+      "br-btc-10": 8
+    }
+  },
+  {
+    "productId": "prod-005",
+    "productName": "Fresh Batticaloa Lagoon Prawns (500g)",
+    "safetyStock": 10,
+    "unit": "500 g pack",
+    "storeStock": {
+      "br-btc-01": 12,
+      "br-btc-02": 8,
+      "br-btc-03": 6,
+      "br-btc-04": 5,
+      "br-btc-05": 4,
+      "br-btc-06": 3,
+      "br-btc-07": 3,
+      "br-btc-08": 2,
+      "br-btc-09": 1,
+      "br-btc-10": 1
+    }
+  },
+  {
+    "productId": "prod-006",
+    "productName": "Fresh Coastal Seer Fish Slices (500g)",
+    "safetyStock": 8,
+    "unit": "500 g pack",
+    "storeStock": {
+      "br-btc-01": 10,
+      "br-btc-02": 6,
+      "br-btc-03": 4,
+      "br-btc-04": 5,
+      "br-btc-05": 3,
+      "br-btc-06": 2,
+      "br-btc-07": 2,
+      "br-btc-08": 2,
+      "br-btc-09": 1,
+      "br-btc-10": 0
+    }
+  },
+  {
+    "productId": "prod-007",
+    "productName": "Ambewela Farm Fresh Full Cream Milk (1L)",
+    "safetyStock": 20,
+    "unit": "1 Liter bottle",
+    "storeStock": {
+      "br-btc-01": 38,
+      "br-btc-02": 32,
+      "br-btc-03": 24,
+      "br-btc-04": 22,
+      "br-btc-05": 18,
+      "br-btc-06": 16,
+      "br-btc-07": 15,
+      "br-btc-08": 12,
+      "br-btc-09": 8,
+      "br-btc-10": 5
+    }
+  },
+  {
+    "productId": "prod-008",
+    "productName": "Highland Pure Buffalo Curd Clay Pot (1L)",
+    "safetyStock": 12,
+    "unit": "1 Liter clay pot",
+    "storeStock": {
+      "br-btc-01": 15,
+      "br-btc-02": 14,
+      "br-btc-03": 8,
+      "br-btc-04": 9,
+      "br-btc-05": 6,
+      "br-btc-06": 5,
+      "br-btc-07": 6,
+      "br-btc-08": 4,
+      "br-btc-09": 2,
+      "br-btc-10": 1
+    }
+  },
+  {
+    "productId": "prod-009",
+    "productName": "Farm Fresh Grade A Brown Eggs (10pk)",
+    "safetyStock": 30,
+    "unit": "Pack of 10",
+    "storeStock": {
+      "br-btc-01": 42,
+      "br-btc-02": 36,
+      "br-btc-03": 26,
+      "br-btc-04": 25,
+      "br-btc-05": 20,
+      "br-btc-06": 18,
+      "br-btc-07": 16,
+      "br-btc-08": 14,
+      "br-btc-09": 8,
+      "br-btc-10": 5
+    }
+  },
+  {
+    "productId": "prod-010",
+    "productName": "Kotmale Processed Cheddar Cheese Block",
+    "safetyStock": 10,
+    "unit": "200 g block",
+    "storeStock": {
+      "br-btc-01": 12,
+      "br-btc-02": 9,
+      "br-btc-03": 6,
+      "br-btc-04": 5,
+      "br-btc-05": 4,
+      "br-btc-06": 3,
+      "br-btc-07": 4,
+      "br-btc-08": 3,
+      "br-btc-09": 1,
+      "br-btc-10": 1
+    }
+  },
+  {
+    "productId": "prod-011",
+    "productName": "Nuwara Eliya Crisp Fresh Carrots (500g)",
+    "safetyStock": 15,
+    "unit": "500 g bunch",
+    "storeStock": {
+      "br-btc-01": 25,
+      "br-btc-02": 20,
+      "br-btc-03": 16,
+      "br-btc-04": 15,
+      "br-btc-05": 14,
+      "br-btc-06": 12,
+      "br-btc-07": 10,
+      "br-btc-08": 8,
+      "br-btc-09": 6,
+      "br-btc-10": 4
+    }
+  },
+  {
+    "productId": "prod-012",
+    "productName": "Local Jaffna & Eastern Red Shallots (500g)",
+    "safetyStock": 20,
+    "unit": "500 g pack",
+    "storeStock": {
+      "br-btc-01": 30,
+      "br-btc-02": 26,
+      "br-btc-03": 18,
+      "br-btc-04": 20,
+      "br-btc-05": 16,
+      "br-btc-06": 12,
+      "br-btc-07": 11,
+      "br-btc-08": 9,
+      "br-btc-09": 5,
+      "br-btc-10": 3
+    }
+  },
+  {
+    "productId": "prod-018",
+    "productName": "Fresh Green Coconuts (Pol / Husked)",
+    "safetyStock": 35,
+    "unit": "1 whole husked",
+    "storeStock": {
+      "br-btc-01": 65,
+      "br-btc-02": 58,
+      "br-btc-03": 42,
+      "br-btc-04": 40,
+      "br-btc-05": 36,
+      "br-btc-06": 32,
+      "br-btc-07": 28,
+      "br-btc-08": 24,
+      "br-btc-09": 15,
+      "br-btc-10": 10
+    }
+  },
+  {
+    "productId": "prod-019",
+    "productName": "Baraka Pure Coconut Oil Bottle (750ml)",
+    "safetyStock": 15,
+    "unit": "750 ml bottle",
+    "storeStock": {
+      "br-btc-01": 22,
+      "br-btc-02": 19,
+      "br-btc-03": 14,
+      "br-btc-04": 12,
+      "br-btc-05": 11,
+      "br-btc-06": 10,
+      "br-btc-07": 8,
+      "br-btc-08": 7,
+      "br-btc-09": 4,
+      "br-btc-10": 3
+    }
+  },
+  {
+    "productId": "prod-020",
+    "productName": "Eastern Roasted Curry Powder (250g)",
+    "safetyStock": 20,
+    "unit": "250 g pouch",
+    "storeStock": {
+      "br-btc-01": 28,
+      "br-btc-02": 25,
+      "br-btc-03": 18,
+      "br-btc-04": 17,
+      "br-btc-05": 14,
+      "br-btc-06": 12,
+      "br-btc-07": 10,
+      "br-btc-08": 8,
+      "br-btc-09": 5,
+      "br-btc-10": 3
+    }
+  },
+  {
+    "productId": "prod-022",
+    "productName": "Dilmah Premium Ceylon Single Origin Tea (400g)",
+    "safetyStock": 20,
+    "unit": "400 g pouch",
+    "storeStock": {
+      "br-btc-01": 34,
+      "br-btc-02": 29,
+      "br-btc-03": 21,
+      "br-btc-04": 22,
+      "br-btc-05": 18,
+      "br-btc-06": 15,
+      "br-btc-07": 14,
+      "br-btc-08": 11,
+      "br-btc-09": 6,
+      "br-btc-10": 5
+    }
+  },
+  {
+    "productId": "prod-025",
+    "productName": "Munchee Super Cream Cracker (500g)",
+    "safetyStock": 30,
+    "unit": "500 g pack",
+    "storeStock": {
+      "br-btc-01": 50,
+      "br-btc-02": 45,
+      "br-btc-03": 32,
+      "br-btc-04": 30,
+      "br-btc-05": 28,
+      "br-btc-06": 24,
+      "br-btc-07": 20,
+      "br-btc-08": 16,
+      "br-btc-09": 9,
+      "br-btc-10": 6
+    }
+  },
+  {
+    "productId": "prod-027",
+    "productName": "Traditional Batticaloa Spicy Murukku (300g)",
+    "safetyStock": 15,
+    "unit": "300 g pack",
+    "storeStock": {
+      "br-btc-01": 24,
+      "br-btc-02": 20,
+      "br-btc-03": 15,
+      "br-btc-04": 14,
+      "br-btc-05": 12,
+      "br-btc-06": 10,
+      "br-btc-07": 8,
+      "br-btc-08": 6,
+      "br-btc-09": 4,
+      "br-btc-10": 2
+    }
+  },
+  {
+    "productId": "prod-035",
+    "productName": "Dry Sprats (Cleaned Karuvadu 250g)",
+    "safetyStock": 12,
+    "unit": "250 g pack",
+    "storeStock": {
+      "br-btc-01": 18,
+      "br-btc-02": 15,
+      "br-btc-03": 12,
+      "br-btc-04": 11,
+      "br-btc-05": 9,
+      "br-btc-06": 8,
+      "br-btc-07": 7,
+      "br-btc-08": 5,
+      "br-btc-09": 3,
+      "br-btc-10": 2
+    }
+  }
+]

@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Manrope:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-manrope: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-dm-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --brand-red: #E4002B;
+  --brand-red-deep: #B80022;
+  --brand-yellow: #FFC20E;
+  --canvas-white: #FFFDFD;
+  --soft-red: #FFE9EC;
+  --dark-navy: #1F2430;
+  --secondary-text: #6B7280;
+  --error-dark-red: #991B1B;
+}
+
+body {
+  font-family: var(--font-dm-sans);
+  background-color: var(--canvas-white);
+  color: var(--dark-navy);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-manrope);
+}
+
+/* Atmospheric Aurora Background Blobs */
+.aurora-bg {
+  position: relative;
+  background-color: #FFFDFD;
+  overflow: hidden;
+}
+
+.aurora-bg::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: -40px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(228, 0, 43, 0.18) 0%, rgba(228, 0, 43, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora-bg::after {
+  content: '';
+  position: absolute;
+  top: 250px;
+  right: -80px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 194, 14, 0.14) 0%, rgba(255, 194, 14, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glassmorphism Classes */
+.glass-surface {
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 8px 32px 0 rgba(228, 0, 43, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.glass-surface-elevated {
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  box-shadow: 0 20px 50px 0 rgba(31, 36, 48, 0.12), 0 0 0 1px rgba(228, 0, 43, 0.12);
+}
+
+.glass-interactive {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-interactive:hover {
+  transform: translateY(-2px);
+  border-color: rgba(228, 0, 43, 0.35);
+  box-shadow: 0 14px 36px 0 rgba(228, 0, 43, 0.15), inset 0 1px 1px 0 #FFFFFF;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 245, 245, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(228, 0, 43, 0.6);
+}

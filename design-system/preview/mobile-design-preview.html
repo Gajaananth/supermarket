@@ -1,0 +1,914 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BuyMe Mobile Design System Preview — Batticaloa District</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@400;500;600;700;800;900&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #0B1524;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 16px;
+    }
+
+    /* Device Mockup Shell */
+    .device-container {
+      position: relative;
+      width: 410px;
+      height: 860px;
+      background: #101926;
+      border-radius: 52px;
+      padding: 12px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+    }
+
+    /* Screen Viewport */
+    .screen-viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #F7FAFF;
+      border-radius: 42px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Aurora Ambient Blobs (behind glass) */
+    .aurora-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(55px);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .blob-1 {
+      top: -40px;
+      left: -40px;
+      width: 260px;
+      height: 260px;
+      background: rgba(22, 139, 255, 0.35);
+    }
+    .blob-2 {
+      top: 35%;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      background: rgba(56, 189, 248, 0.30);
+    }
+    .blob-3 {
+      bottom: 20px;
+      left: -30px;
+      width: 300px;
+      height: 300px;
+      background: rgba(8, 102, 204, 0.28);
+    }
+
+    /* Mobile Status Bar & Dynamic Island */
+    .status-bar {
+      position: relative;
+      z-index: 50;
+      height: 44px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #10243B;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+    }
+    .dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 26px;
+      background: #000;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+    .island-camera {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #111;
+      border: 1px solid #222;
+    }
+    .island-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .island-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+    }
+    .island-text {
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* Glass App Bar */
+    .glass-app-bar {
+      position: relative;
+      z-index: 40;
+      padding: 8px 18px 12px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .buyme-badge-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #168BFF 0%, #0866CC 100%);
+      box-shadow: 0 4px 14px rgba(22, 139, 255, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+    }
+    .brand-name {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 900;
+      font-size: 17px;
+      line-height: 1.1;
+      letter-spacing: -0.3px;
+    }
+    .brand-name .d-letter { color: #168BFF; }
+    .brand-name .mart-text { color: #10243B; }
+    .brand-store {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .icon-btn-glass {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(22, 139, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #10243B;
+      cursor: pointer;
+    }
+
+    /* Scrollable App Body */
+    .app-body {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .app-body::-webkit-scrollbar { display: none; }
+
+    /* Glass Card Style */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.68);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(16, 36, 59, 0.05);
+    }
+    .glass-card-elevated {
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(16, 36, 59, 0.08);
+    }
+
+    /* Section Headers */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .accent-bar {
+      width: 3.5px;
+      height: 15px;
+      background: #168BFF;
+      border-radius: 2px;
+    }
+    .section-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #10243B;
+    }
+
+    /* Frosted Search */
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      padding: 10px 14px;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(16, 36, 59, 0.04);
+    }
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      color: #10243B;
+      width: 100%;
+    }
+    .search-box input::placeholder { color: #94A3B8; }
+
+    /* Category Horizontal List */
+    .category-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+    .cat-pill {
+      flex: 0 0 auto;
+      width: 80px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+    }
+    .cat-pill.active {
+      background: #EAF3FF;
+      border-color: #168BFF;
+      box-shadow: 0 4px 16px rgba(22, 139, 255, 0.25);
+    }
+    .cat-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #EAF3FF;
+      color: #168BFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cat-pill.active .cat-icon-wrap {
+      background: #168BFF;
+      color: white;
+    }
+    .cat-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #10243B;
+      line-height: 1.2;
+    }
+    .cat-tamil {
+      font-family: 'Noto Sans Tamil', sans-serif;
+      font-size: 8.5px;
+      color: #64748B;
+      font-weight: 600;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .prod-card {
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 18px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 4px 16px rgba(16, 36, 59, 0.04);
+    }
+    .prod-img-box {
+      position: relative;
+      height: 95px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #EAF3FF 0%, #FFFFFF 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #168BFF;
+    }
+    .discount-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: #EF4444;
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .prod-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .prod-tag {
+      font-size: 9px;
+      font-weight: 800;
+      color: #168BFF;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Manrope', sans-serif;
+    }
+    .prod-name {
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #10243B;
+      line-height: 1.25;
+    }
+    .prod-name-ta {
+      font-family: 'Noto Sans Tamil', sans-serif;
+      font-size: 9.5px;
+      color: #64748B;
+    }
+    .prod-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+    .prod-price {
+      font-family: 'Manrope', sans-serif;
+      font-size: 13.5px;
+      font-weight: 900;
+      color: #168BFF;
+    }
+    .prod-original {
+      font-size: 9px;
+      color: #94A3B8;
+      text-decoration: line-through;
+    }
+    .btn-stepper {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #CBD5E1;
+      border-radius: 10px;
+      padding: 2px 4px;
+      gap: 6px;
+    }
+    .stepper-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: none;
+      background: #F1F5F9;
+      color: #10243B;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stepper-btn.add {
+      background: #168BFF;
+      color: white;
+    }
+    .stepper-count {
+      font-family: 'Manrope', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: #10243B;
+    }
+
+    /* Stepper Timeline */
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .t-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .t-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .t-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .t-circle.done {
+      background: #168BFF;
+      color: white;
+    }
+    .t-circle.active {
+      background: #fff;
+      border: 2px solid #168BFF;
+      color: #168BFF;
+      box-shadow: 0 0 10px rgba(22, 139, 255, 0.4);
+    }
+    .t-circle.pending {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      color: #94A3B8;
+    }
+    .t-line {
+      width: 2px;
+      height: 20px;
+      background: #E2E8F0;
+      margin-top: 2px;
+    }
+    .t-line.done { background: #168BFF; }
+    .t-content {
+      flex: 1;
+    }
+    .t-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .t-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: #10243B;
+    }
+    .t-time {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748B;
+    }
+    .t-sub {
+      font-size: 10px;
+      color: #64748B;
+      margin-top: 1px;
+    }
+    .t-sub-ta {
+      font-family: 'Noto Sans Tamil', sans-serif;
+      font-size: 9.5px;
+      color: #168BFF;
+      font-weight: 600;
+    }
+
+    /* Floating Glass Bottom Navigation */
+    .glass-bottom-nav {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 9999px;
+      padding: 8px 16px;
+      box-shadow: 0 12px 36px rgba(16, 36, 59, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #64748B;
+      text-decoration: none;
+      font-size: 9.5px;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+      cursor: pointer;
+    }
+    .nav-item.active {
+      color: #168BFF;
+    }
+    .nav-item.active .nav-icon {
+      background: #EAF3FF;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    /* Floating Glass Toast */
+    .glass-toast {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(22, 139, 255, 0.4);
+      border-radius: 16px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(22, 139, 255, 0.18);
+    }
+    .toast-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ECFDF5;
+      color: #10B981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toast-text {
+      flex: 1;
+    }
+    .toast-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #10243B;
+    }
+    .toast-desc {
+      font-size: 9.5px;
+      color: #64748B;
+    }
+
+    /* SVG Icon Helpers */
+    .icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .icon-sm {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="device-container">
+    <div class="screen-viewport">
+      <!-- Atmospheric Aurora Blobs -->
+      <div class="aurora-blob blob-1"></div>
+      <div class="aurora-blob blob-2"></div>
+      <div class="aurora-blob blob-3"></div>
+
+      <!-- iOS Status Bar & Dynamic Island -->
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="dynamic-island">
+          <div class="island-camera"></div>
+          <div class="island-badge">
+            <div class="island-dot"></div>
+            <span class="island-text">BuyMe</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 4px; align-items: center;">
+          <svg class="icon-sm" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+          <svg class="icon-sm" viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2" ry="2"></rect><line x1="22" y1="11" x2="22" y2="13"></line></svg>
+        </div>
+      </div>
+
+      <!-- Glass App Bar with BuyMe Logo -->
+      <div class="glass-app-bar">
+        <div class="brand-group">
+          <div class="buyme-badge-icon">D</div>
+          <div>
+            <div class="brand-name"><span class="d-letter">D</span><span class="mart-text">Mart</span></div>
+            <div class="brand-store">Batticaloa District</div>
+          </div>
+        </div>
+
+        <div class="header-icons">
+          <div class="icon-btn-glass">
+            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </div>
+          <div class="icon-btn-glass" style="background: #168BFF; color: white; border: none; box-shadow: 0 4px 12px rgba(22, 139, 255, 0.35);">
+            <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrollable App Body -->
+      <div class="app-body">
+        <!-- Floating Toast -->
+        <div class="glass-toast">
+          <div class="toast-icon">
+            <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div class="toast-text">
+            <div class="toast-title">BuyMe Express Active</div>
+            <div class="toast-desc">Delivering across 10 Batticaloa stores.</div>
+          </div>
+        </div>
+
+        <!-- Frosted Search Bar -->
+        <div class="search-box">
+          <svg class="icon-sm" style="color: #94A3B8;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search fresh groceries in Batticaloa..." value="Fresh tomatoes, dairy, seafood">
+          <svg class="icon-sm" style="color: #168BFF;" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        </div>
+
+        <!-- Category Pills -->
+        <div>
+          <div class="section-label">
+            <div class="accent-bar"></div>
+            <span class="section-title">Fresh Categories</span>
+          </div>
+          <div class="category-scroll">
+            <div class="cat-pill active">
+              <div class="cat-icon-wrap">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"></path><path d="M10 2c1 .5 2 2 2 5"></path></svg>
+              </div>
+              <span class="cat-title">Fruits</span>
+              <span class="cat-tamil">பழங்கள்</span>
+            </div>
+
+            <div class="cat-pill">
+              <div class="cat-icon-wrap">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M2.27 21.7s9.87-3.5 12.73-6.36a4.5 4.5 0 0 0-6.36-6.37C5.77 11.84 2.27 21.7 2.27 21.7zM8.64 14l-2.05-2.04M15.34 15l-2.05-2.05"></path></svg>
+              </div>
+              <span class="cat-title">Veggies</span>
+              <span class="cat-tamil">காய்கறிகள்</span>
+            </div>
+
+            <div class="cat-pill">
+              <div class="cat-icon-wrap">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M8 2h8v4H8z"></path><rect x="6" y="6" width="12" height="16" rx="2"></rect></svg>
+              </div>
+              <span class="cat-title">Dairy</span>
+              <span class="cat-tamil">பால் மா</span>
+            </div>
+
+            <div class="cat-pill">
+              <div class="cat-icon-wrap">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.46-3.44 6-7 6s-7.56-2.54-8.5-6Z"></path></svg>
+              </div>
+              <span class="cat-title">Seafood</span>
+              <span class="cat-tamil">மீன்</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Cards -->
+        <div>
+          <div class="section-label">
+            <div class="accent-bar"></div>
+            <span class="section-title">Daily Batticaloa Deals</span>
+          </div>
+          <div class="product-grid">
+            <!-- Product 1 -->
+            <div class="prod-card">
+              <div class="prod-img-box">
+                <div class="discount-badge">15% OFF</div>
+                <svg style="width: 44px; height: 44px; stroke: #168BFF; fill: none; stroke-width: 1.8;" viewBox="0 0 24 24">
+                  <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"></path>
+                  <path d="M10 2c1 .5 2 2 2 5"></path>
+                </svg>
+              </div>
+              <div class="prod-details">
+                <span class="prod-tag">Produce • 1 kg</span>
+                <span class="prod-name">Fresh Red Tomatoes</span>
+                <span class="prod-name-ta">நாட்டுத் தக்காளி</span>
+              </div>
+              <div class="prod-bottom">
+                <div>
+                  <div class="prod-price">LKR 380</div>
+                  <div class="prod-original">LKR 450</div>
+                </div>
+                <div class="btn-stepper">
+                  <button class="stepper-btn">-</button>
+                  <span class="stepper-count">2</span>
+                  <button class="stepper-btn add">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="prod-card">
+              <div class="prod-img-box">
+                <svg style="width: 44px; height: 44px; stroke: #168BFF; fill: none; stroke-width: 1.8;" viewBox="0 0 24 24">
+                  <path d="M8 2h8v4H8z"></path>
+                  <rect x="6" y="6" width="12" height="16" rx="2"></rect>
+                </svg>
+              </div>
+              <div class="prod-details">
+                <span class="prod-tag">Dairy • 400 g</span>
+                <span class="prod-name">Anchor Full Cream</span>
+                <span class="prod-name-ta">பால் மா</span>
+              </div>
+              <div class="prod-bottom">
+                <div>
+                  <div class="prod-price">LKR 1,150</div>
+                </div>
+                <div class="btn-stepper">
+                  <button class="stepper-btn add" style="width: 46px; border-radius: 8px;">ADD</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Order Tracking Stepper Timeline -->
+        <div class="glass-card-elevated">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div class="section-label" style="margin-bottom: 0;">
+              <div class="accent-bar"></div>
+              <span class="section-title">Live Order #7742</span>
+            </div>
+            <span style="font-size: 10px; font-weight: 800; background: #EAF3FF; color: #168BFF; padding: 3px 8px; border-radius: 999px; border: 1px solid rgba(22, 139, 255, 0.3);">
+              Out for Delivery
+            </span>
+          </div>
+
+          <div class="timeline-container">
+            <!-- Step 1 -->
+            <div class="t-step">
+              <div class="t-indicator">
+                <div class="t-circle done">
+                  <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div class="t-line done"></div>
+              </div>
+              <div class="t-content">
+                <div class="t-title-row">
+                  <span class="t-title">Order Placed</span>
+                  <span class="t-time">10:15 AM</span>
+                </div>
+                <span class="t-sub-ta">ஆர்டர் உறுதி செய்யப்பட்டது</span>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="t-step">
+              <div class="t-indicator">
+                <div class="t-circle done">
+                  <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div class="t-line done"></div>
+              </div>
+              <div class="t-content">
+                <div class="t-title-row">
+                  <span class="t-title">Packed at Batticaloa Hub</span>
+                  <span class="t-time">10:28 AM</span>
+                </div>
+                <span class="t-sub-ta">பொதி செய்யப்பட்டது</span>
+              </div>
+            </div>
+
+            <!-- Step 3 (Active) -->
+            <div class="t-step">
+              <div class="t-indicator">
+                <div class="t-circle active">
+                  <div style="width: 8px; height: 8px; border-radius: 50%; background: #168BFF;"></div>
+                </div>
+                <div class="t-line"></div>
+              </div>
+              <div class="t-content">
+                <div class="t-title-row">
+                  <span class="t-title">Rider Suresh En Route</span>
+                  <span class="t-time">10:35 AM</span>
+                </div>
+                <span class="t-sub-ta">விநியோகத்தில் உள்ளது</span>
+                <div class="t-sub">Hero Honda WP-8821 • Kallady Road</div>
+              </div>
+            </div>
+
+            <!-- Step 4 (Pending) -->
+            <div class="t-step">
+              <div class="t-indicator">
+                <div class="t-circle pending">4</div>
+              </div>
+              <div class="t-content">
+                <div class="t-title-row">
+                  <span class="t-title" style="color: #94A3B8;">Delivery</span>
+                  <span class="t-time">~10:47 AM</span>
+                </div>
+                <div class="t-sub">Estimated arrival in 12 mins</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Stat Card -->
+        <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 10px; font-weight: 700; color: #64748B; text-transform: uppercase;">Batticaloa Network</div>
+            <div style="font-family: 'Manrope', sans-serif; font-size: 18px; font-weight: 900; color: #10243B; margin-top: 2px;">10 Active Stores</div>
+            <div style="font-size: 10px; color: #10B981; font-weight: 700;">100% Hub Uptime Today</div>
+          </div>
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #EAF3FF; color: #168BFF; display: flex; align-items: center; justify-content: center;">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Glass Bottom Navigation -->
+      <div class="glass-bottom-nav">
+        <div class="nav-item active">
+          <div class="nav-icon">
+            <svg class="icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </div>
+          <span>Shop</span>
+        </div>
+
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg class="icon-sm" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          </div>
+          <span>Hubs</span>
+        </div>
+
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          </div>
+          <span>Orders</span>
+        </div>
+
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

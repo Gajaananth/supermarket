@@ -1,0 +1,706 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BuyMe Web Design System — Batticaloa District</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@400;500;600;700;800;900&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #F7FAFF;
+      color: #1E293B;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      padding: 32px 40px;
+    }
+
+    /* Ambient Aurora Blobs */
+    .aurora-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 {
+      top: -80px;
+      left: -80px;
+      width: 420px;
+      height: 420px;
+      background: rgba(22, 139, 255, 0.28);
+    }
+    .blob-2 {
+      top: 25%;
+      right: -100px;
+      width: 480px;
+      height: 480px;
+      background: rgba(56, 189, 248, 0.24);
+    }
+    .blob-3 {
+      bottom: -60px;
+      left: 30%;
+      width: 500px;
+      height: 500px;
+      background: rgba(8, 102, 204, 0.20);
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-w: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Glass Surface Helper */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(22, 139, 255, 0.08);
+    }
+
+    /* Header Nav */
+    .header-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #168BFF 0%, #0866CC 100%);
+      box-shadow: 0 4px 18px rgba(22, 139, 255, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+    }
+    .brand-wordmark {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: -0.4px;
+    }
+    .brand-wordmark .neon { color: #168BFF; }
+    .brand-wordmark .navy { color: #10243B; }
+    .badge-sub {
+      font-size: 10px;
+      font-weight: 800;
+      color: #168BFF;
+      background: #EAF3FF;
+      border: 1px solid rgba(22, 139, 255, 0.3);
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .brand-subline {
+      font-size: 11.5px;
+      color: #64748B;
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .store-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #EAF3FF;
+      border: 1px solid rgba(22, 139, 255, 0.25);
+      color: #10243B;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+    }
+    .btn-neon {
+      background: #168BFF;
+      color: white;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 14px;
+      font-size: 12.5px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+      box-shadow: 0 4px 16px rgba(22, 139, 255, 0.35);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Section Headers */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .head-bar {
+      width: 4px;
+      height: 18px;
+      background: #168BFF;
+      border-radius: 2px;
+    }
+    .head-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: #10243B;
+    }
+    .head-sub {
+      font-size: 12px;
+      color: #64748B;
+      margin-left: 14px;
+      font-weight: 500;
+    }
+
+    /* Swatches Grid */
+    .swatches-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 10px;
+    }
+    .swatch-box {
+      border-radius: 14px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 76px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .swatch-name {
+      font-size: 10px;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+    }
+    .swatch-hex {
+      font-size: 9px;
+      font-family: monospace;
+      opacity: 0.85;
+    }
+
+    /* Grid 2-col */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Grid 4-col */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* Grid 3-col */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    /* Typography showcase */
+    .typo-item {
+      margin-bottom: 10px;
+    }
+    .typo-h1 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #10243B;
+    }
+    .typo-h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: #10243B;
+    }
+    .typo-body {
+      font-size: 13px;
+      color: #1E293B;
+      line-height: 1.5;
+    }
+    .typo-tamil {
+      font-family: 'Noto Sans Tamil', sans-serif;
+      font-size: 13px;
+      color: #10243B;
+      font-weight: 600;
+      background: #EAF3FF;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(22, 139, 255, 0.2);
+    }
+
+    /* Status Badges */
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+    }
+    .badge-pending { background: #FFFBEB; color: #F59E0B; border: 1px solid #FDE68A; }
+    .badge-confirmed { background: #EFF6FF; color: #168BFF; border: 1px solid #BFDBFE; }
+    .badge-preparing { background: #F5F3FF; color: #8B5CF6; border: 1px solid #DDD6FE; }
+    .badge-ready { background: #F0F9FF; color: #0284C7; border: 1px solid #BAE6FD; }
+    .badge-out { background: #EAF3FF; color: #168BFF; border: 1px solid rgba(22, 139, 255, 0.4); box-shadow: 0 2px 8px rgba(22, 139, 255, 0.15); }
+    .badge-delivered { background: #ECFDF5; color: #10B981; border: 1px solid #A7F3D0; }
+    .badge-cancelled { background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; }
+
+    /* KPI Stat Card */
+    .kpi-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .kpi-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #EAF3FF;
+      color: #168BFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kpi-val {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: #10243B;
+      letter-spacing: -0.5px;
+    }
+    .kpi-title {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 600;
+    }
+
+    /* Product Card */
+    .web-prod-card {
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .web-prod-img {
+      position: relative;
+      height: 120px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #EAF3FF 0%, #FFFFFF 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #168BFF;
+      border: 1px solid #F1F5F9;
+    }
+    .web-prod-price {
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: #168BFF;
+    }
+
+    /* Stepper */
+    .timeline-row {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .timeline-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .circle-done { background: #168BFF; color: white; }
+    .circle-active { background: white; border: 2px solid #168BFF; color: #168BFF; box-shadow: 0 0 10px rgba(22, 139, 255, 0.35); }
+    .circle-pending { background: #F1F5F9; border: 1px solid #CBD5E1; color: #94A3B8; }
+
+    /* SVG Icon Helpers */
+    .icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .icon-sm {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Aurora Blobs -->
+  <div class="aurora-blob blob-1"></div>
+  <div class="aurora-blob blob-2"></div>
+  <div class="aurora-blob blob-3"></div>
+
+  <div class="container">
+    <!-- Header Nav -->
+    <header class="glass-card header-nav">
+      <div class="brand-wrap">
+        <div class="brand-logo-icon">D</div>
+        <div>
+          <div class="brand-wordmark">
+            <span class="neon">D</span><span class="navy">Mart</span>
+            <span class="badge-sub">DESIGN SYSTEM v2.0</span>
+          </div>
+          <div class="brand-subline">Unified Shared Design System • Batticaloa District Hubs</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="store-pill">
+          <svg class="icon-sm" style="color: #168BFF;" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>10 Batticaloa Stores</span>
+        </div>
+        <button class="btn-neon">
+          <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+          <span>Tokens.json Synced</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- SECTION 1: Color Tokens -->
+    <div>
+      <div class="section-head">
+        <div class="head-bar"></div>
+        <span class="head-title">01. Neon Ice Glass Color Tokens (Strict WCAG AA Standards)</span>
+        <span class="head-sub">One single source of truth from tokens.json</span>
+      </div>
+
+      <div class="swatches-grid">
+        <div class="swatch-box" style="background: #168BFF; color: white;">
+          <span class="swatch-name">Neon Blue</span>
+          <span class="swatch-hex">#168BFF</span>
+        </div>
+        <div class="swatch-box" style="background: #0866CC; color: white;">
+          <span class="swatch-name">Deep Blue</span>
+          <span class="swatch-hex">#0866CC</span>
+        </div>
+        <div class="swatch-box" style="background: #10243B; color: white;">
+          <span class="swatch-name">Dark Navy</span>
+          <span class="swatch-hex">#10243B</span>
+        </div>
+        <div class="swatch-box" style="background: #F7FAFF; color: #10243B; border: 1px solid #CBD5E1;">
+          <span class="swatch-name">Ice White</span>
+          <span class="swatch-hex">#F7FAFF</span>
+        </div>
+        <div class="swatch-box" style="background: #EAF3FF; color: #10243B; border: 1px solid #BFDBFE;">
+          <span class="swatch-name">Soft Blue</span>
+          <span class="swatch-hex">#EAF3FF</span>
+        </div>
+        <div class="swatch-box" style="background: #10B981; color: white;">
+          <span class="swatch-name">Success</span>
+          <span class="swatch-hex">#10B981</span>
+        </div>
+        <div class="swatch-box" style="background: #F59E0B; color: white;">
+          <span class="swatch-name">Warning</span>
+          <span class="swatch-hex">#F59E0B</span>
+        </div>
+        <div class="swatch-box" style="background: #EF4444; color: white;">
+          <span class="swatch-name">Error</span>
+          <span class="swatch-hex">#EF4444</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Typography & High-Contrast Surfaces -->
+    <div class="grid-2">
+      <div class="glass-card">
+        <div class="section-head">
+          <div class="head-bar"></div>
+          <span class="head-title">Bilingual Typography Hierarchy</span>
+        </div>
+        <div class="typo-item">
+          <div class="typo-h1">Heading H1 — Manrope 800 (Bold)</div>
+        </div>
+        <div class="typo-item">
+          <div class="typo-h2">Heading H2 — Manrope 700 (Subheading)</div>
+        </div>
+        <div class="typo-item">
+          <div class="typo-body">
+            Body Regular — DM Sans 500: High-contrast typography designed specifically to prevent washed-out text on frosted glass surfaces.
+          </div>
+        </div>
+        <div class="typo-tamil">
+          <span style="font-size: 10px; font-weight: 800; color: #168BFF; text-transform: uppercase; display: block; margin-bottom: 2px;">Tamil Script (Noto Sans Tamil)</span>
+          மட்டக்களப்பு மாவட்டத்திற்கான பிரீமியம் நவீன சூப்பர் மார்க்கெட் விநியோகம்.
+        </div>
+      </div>
+
+      <!-- Glass Surfaces Showcase -->
+      <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="section-head">
+          <div class="head-bar"></div>
+          <span class="head-title">Real Frosted Glass Surfaces</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div style="background: rgba(255, 255, 255, 0.68); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 16px; padding: 14px; box-shadow: 0 4px 16px rgba(16, 36, 59, 0.05);">
+            <div style="font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px; color: #10243B;">Standard Glass</div>
+            <div style="font-size: 11px; color: #64748B; margin-top: 3px;">Fill 68% • Blur 20px • 1px border</div>
+          </div>
+
+          <div style="background: rgba(255, 255, 255, 0.84); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 14px; box-shadow: 0 12px 36px rgba(16, 36, 59, 0.12);">
+            <div style="font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px; color: #10243B;">Elevated Glass</div>
+            <div style="font-size: 11px; color: #64748B; margin-top: 3px;">Fill 84% • Blur 24px • 48px shadow</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
+          <button class="btn-neon" style="flex: 1; justify-content: center;">
+            <svg class="icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span>Primary Action (Press Scale)</span>
+          </button>
+          <button style="flex: 1; background: #EAF3FF; border: 1px solid rgba(22, 139, 255, 0.25); color: #10243B; font-weight: 700; font-family: 'Manrope', sans-serif; font-size: 12.5px; border-radius: 14px; cursor: pointer;">
+            Secondary Action
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: KPI Metrics -->
+    <div>
+      <div class="section-head">
+        <div class="head-bar"></div>
+        <span class="head-title">03. Dashboard KPI Stat Cards (Batticaloa District Metrics)</span>
+      </div>
+
+      <div class="grid-4">
+        <div class="glass-card kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">
+              <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <span class="badge-pill badge-delivered">+18.4%</span>
+          </div>
+          <div class="kpi-val">LKR 148,500</div>
+          <div class="kpi-title">Daily Revenue (10 Hubs)</div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            </div>
+            <span class="badge-pill badge-confirmed">42 Active</span>
+          </div>
+          <div class="kpi-val">384 Orders</div>
+          <div class="kpi-title">Today's Fulfillment</div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            </div>
+            <span class="badge-pill badge-delivered">98.2%</span>
+          </div>
+          <div class="kpi-val">24.8 mins</div>
+          <div class="kpi-title">Avg Delivery Time</div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <span class="badge-pill badge-preparing">100% Online</span>
+          </div>
+          <div class="kpi-val">10 Stores</div>
+          <div class="kpi-title">Batticaloa District Only</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Product Cards, Status Badges & Stepper Timeline -->
+    <div class="grid-3">
+      <!-- Product 1 -->
+      <div class="web-prod-card">
+        <div class="web-prod-img">
+          <span style="position: absolute; top: 10px; left: 10px; background: #EF4444; color: white; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 6px; font-family: 'Manrope', sans-serif;">
+            15% OFF
+          </span>
+          <svg style="width: 54px; height: 54px; stroke: #168BFF; fill: none; stroke-width: 1.8;" viewBox="0 0 24 24">
+            <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"></path>
+            <path d="M10 2c1 .5 2 2 2 5"></path>
+          </svg>
+        </div>
+
+        <div>
+          <div style="font-size: 10.5px; font-weight: 800; color: #168BFF; text-transform: uppercase;">Produce • 1 kg</div>
+          <div style="font-family: 'Manrope', sans-serif; font-size: 14.5px; font-weight: 800; color: #10243B; margin-top: 2px;">Fresh Red Tomatoes</div>
+          <div style="font-family: 'Noto Sans Tamil', sans-serif; font-size: 11px; color: #64748B;">நாட்டுத் தக்காளி</div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #F1F5F9;">
+          <div>
+            <div class="web-prod-price">LKR 380.00</div>
+            <div style="font-size: 11px; color: #94A3B8; text-decoration: line-through;">LKR 450.00</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; background: white; border: 1px solid #CBD5E1; border-radius: 10px; padding: 3px 6px;">
+            <button style="width: 22px; height: 22px; border: none; background: #F1F5F9; border-radius: 6px; font-weight: 800; cursor: pointer;">-</button>
+            <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800;">2</span>
+            <button style="width: 22px; height: 22px; border: none; background: #168BFF; color: white; border-radius: 6px; font-weight: 800; cursor: pointer;">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Badges Gallery -->
+      <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div class="section-head">
+            <div class="head-bar"></div>
+            <span class="head-title">7 Lifecycle Status Badges</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="badge-pill badge-pending">
+              <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              <span>Pending (நிலுவையில்)</span>
+            </div>
+            <div class="badge-pill badge-confirmed">
+              <svg class="icon-sm" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <span>Confirmed (உறுதிப்படுத்தப்பட்டது)</span>
+            </div>
+            <div class="badge-pill badge-preparing">
+              <svg class="icon-sm" viewBox="0 0 24 24"><path d="m16.5 9.4 4.5 4.5a2 2 0 0 1 0 2.8l-4.5 4.5a2 2 0 0 1-2.8 0L9.2 16.7a2 2 0 0 1 0-2.8l4.5-4.5a2 2 0 0 1 2.8 0Z"></path></svg>
+              <span>Preparing (தயாராகிறது)</span>
+            </div>
+            <div class="badge-pill badge-ready">
+              <svg class="icon-sm" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path></svg>
+              <span>Ready for Pickup</span>
+            </div>
+            <div class="badge-pill badge-out">
+              <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="15" cy="5" r="1"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg>
+              <span>Out for Delivery (விநியோகத்தில்)</span>
+            </div>
+            <div class="badge-pill badge-delivered">
+              <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Delivered (வழங்கப்பட்டது)</span>
+            </div>
+            <div class="badge-pill badge-cancelled">
+              <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              <span>Cancelled (ரத்து)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Order Stepper Timeline -->
+      <div class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div class="section-head" style="margin-bottom: 0;">
+            <div class="head-bar"></div>
+            <span class="head-title">Live Tracking #7742</span>
+          </div>
+          <span class="badge-pill badge-out" style="font-size: 10px;">Out for Delivery</span>
+        </div>
+
+        <div>
+          <div class="timeline-row">
+            <div class="timeline-circle circle-done">
+              <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 800; color: #10243B;">Order Placed</div>
+              <div style="font-size: 10.5px; color: #64748B;">10:15 AM • Batticaloa Hub</div>
+            </div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-circle circle-done">
+              <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 800; color: #10243B;">Packed & Verified</div>
+              <div style="font-size: 10.5px; color: #64748B;">10:28 AM • Ice-packed seal</div>
+            </div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-circle circle-active">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: #168BFF;"></div>
+            </div>
+            <div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 800; color: #10243B;">Rider Suresh En Route</div>
+              <div style="font-size: 10.5px; color: #168BFF; font-weight: 600;">Hero Honda WP-8821</div>
+            </div>
+          </div>
+
+          <div class="timeline-row" style="margin-bottom: 0;">
+            <div class="timeline-circle circle-pending">4</div>
+            <div>
+              <div style="font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700; color: #94A3B8;">Delivery (~10:47 AM)</div>
+              <div style="font-size: 10.5px; color: #94A3B8;">Kallady Beach Road</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

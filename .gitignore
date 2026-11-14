@@ -1,0 +1,42 @@
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+.npmrc
+**/local.properties
+**/key.properties
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+
+# Dependencies and generated output
+node_modules/
+.next/
+.vercel/
+out/
+dist/
+coverage/
+.dart_tool/
+.pub-cache/
+.pub/
+.gradle/
+build/
+.cache/
+*.tsbuildinfo
+*.apk
+*.aab
+*.log
+step4b_results.json
+
+# Flutter-generated metadata
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+
+# IDE and operating system files
+.idea/
+*.iml
+.DS_Store
+Thumbs.db

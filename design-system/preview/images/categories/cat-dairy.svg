@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" rx="36" fill="#FFF9F9" />
+  <rect x="1" y="1" width="398" height="398" rx="35" stroke="#F3F4F6" stroke-width="2" />
+  <circle cx="200" cy="180" r="120" fill="#EFF6FF" filter="blur(30px)" />
+  <ellipse cx="200" cy="290" rx="70" ry="12" fill="#1F2430" opacity="0.06" />
+  <circle cx="200" cy="170" r="54" fill="#2563EB" />
+  <circle cx="200" cy="170" r="48" fill="#FFFFFF" opacity="0.18" />
+  <text x="200" y="260" font-family="-apple-system, sans-serif" font-weight="900" font-size="16" text-anchor="middle" fill="#1F2430">Dairy, Eggs &amp; Chilled</text>
+  <text x="200" y="285" font-family="'Noto Sans Tamil', sans-serif" font-weight="700" font-size="13" text-anchor="middle" fill="#2563EB">பால் &amp; முட்டை</text>
+  <text x="200" y="315" font-family="-apple-system, sans-serif" font-weight="600" font-size="11" text-anchor="middle" fill="#6B7280">10 Batticaloa Stores</text>
+</svg>

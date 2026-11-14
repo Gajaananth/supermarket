@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="800" viewBox="0 0 1000 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="800" fill="#FFFDFD" />
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(228, 0, 43, 0.06)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1000" height="800" fill="url(#grid)" />
+  <path d="M 0 0 L 680 0 Q 720 120 700 240 Q 750 380 720 500 Q 760 620 710 750 L 690 800 L 0 800 Z" fill="#FEE9EC" stroke="#FCA5A5" stroke-width="2" />
+  <text x="850" y="380" font-family="sans-serif" font-weight="800" font-size="16" fill="#9CA3AF" letter-spacing="4" transform="rotate(90 850 380)">INDIAN OCEAN</text>
+  <path d="M 640 180 Q 600 240 610 320 Q 640 400 620 500 Q 590 600 610 700" stroke="#BAE6FD" stroke-width="22" stroke-linecap="round" fill="none" opacity="0.9" />
+  <path d="M 640 180 Q 600 240 610 320 Q 640 400 620 500 Q 590 600 610 700" stroke="#0284C7" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.6" />
+  <path d="M 500 80 L 530 140 L 570 240 L 610 330 L 630 450 L 640 580 L 630 720" stroke="#D1D5DB" stroke-width="3" stroke-dasharray="6,4" fill="none" />
+
+  <g transform="translate(500, 760)">
+    <rect x="-180" y="-22" width="360" height="34" rx="17" fill="rgba(31, 36, 48, 0.9)" />
+    <text x="0" y="0" font-family="sans-serif" font-weight="900" font-size="13" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">
+      APPROXIMATE — DEMO ONLY
+    </text>
+  </g>
+
+  <g transform="translate(40, 50)">
+    <rect width="320" height="70" rx="18" fill="rgba(255, 255, 255, 0.92)" stroke="#E4002B" stroke-width="1.5" />
+    <text x="20" y="30" font-family="sans-serif" font-weight="900" font-size="16" fill="#1F2430">BuyMe Batticaloa District</text>
+    <text x="20" y="52" font-family="sans-serif" font-weight="700" font-size="12" fill="#E4002B">10 Proposed Store Hubs Network</text>
+  </g>
+
+  <!-- 1. Batticaloa Town -->
+  <g transform="translate(610, 330)">
+    <circle cx="0" cy="0" r="42" fill="rgba(228, 0, 43, 0.12)" />
+    <circle cx="0" cy="0" r="22" fill="rgba(228, 0, 43, 0.28)" />
+    <circle cx="0" cy="0" r="11" fill="#E4002B" stroke="#FFFFFF" stroke-width="3" />
+    <rect x="18" y="-18" width="165" height="36" rx="10" fill="#1F2430" />
+    <text x="28" y="-2" font-family="sans-serif" font-weight="900" font-size="11" fill="#FFFFFF">1. Batticaloa Town</text>
+    <text x="28" y="11" font-family="sans-serif" font-weight="700" font-size="9" fill="#FFC20E">MAIN HUB • 5.0 km</text>
+  </g>
+  <!-- 2. Kattankudy -->
+  <g transform="translate(625, 410)">
+    <circle cx="0" cy="0" r="8" fill="#E4002B" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="14" y="-14" width="135" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="22" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">2. Kattankudy</text>
+  </g>
+  <!-- 3. Eravur -->
+  <g transform="translate(575, 260)">
+    <circle cx="0" cy="0" r="8" fill="#E4002B" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="14" y="-14" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="22" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">3. Eravur</text>
+  </g>
+  <!-- 4. Valaichenai -->
+  <g transform="translate(510, 110)">
+    <circle cx="0" cy="0" r="9" fill="#E4002B" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="14" y="-14" width="135" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="22" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">4. Valaichenai</text>
+  </g>
+  <!-- 5. Oddamavadi -->
+  <g transform="translate(470, 125)">
+    <circle cx="0" cy="0" r="8" fill="#B80022" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="-140" y="-14" width="125" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="-132" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">5. Oddamavadi</text>
+  </g>
+  <!-- 6. Chenkalady -->
+  <g transform="translate(550, 210)">
+    <circle cx="0" cy="0" r="8" fill="#E4002B" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="-135" y="-14" width="120" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="-127" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">6. Chenkalady</text>
+  </g>
+  <!-- 7. Kaluwanchikudy -->
+  <g transform="translate(635, 550)">
+    <circle cx="0" cy="0" r="9" fill="#E4002B" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="14" y="-14" width="150" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="22" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">7. Kaluwanchikudy</text>
+  </g>
+  <!-- 8. Arayampathy -->
+  <g transform="translate(630, 470)">
+    <circle cx="0" cy="0" r="8" fill="#B80022" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="14" y="-14" width="130" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="22" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">8. Arayampathy</text>
+  </g>
+  <!-- 9. Kiran -->
+  <g transform="translate(535, 160)">
+    <circle cx="0" cy="0" r="8" fill="#B80022" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="-105" y="-14" width="90" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="-97" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">9. Kiran</text>
+  </g>
+  <!-- 10. Vellavely -->
+  <g transform="translate(540, 640)">
+    <circle cx="0" cy="0" r="8" fill="#E4002B" stroke="#FFFFFF" stroke-width="2.5" />
+    <rect x="-120" y="-14" width="105" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB" />
+    <text x="-112" y="4" font-family="sans-serif" font-weight="800" font-size="10" fill="#1F2430">10. Vellavely</text>
+  </g>
+</svg>
