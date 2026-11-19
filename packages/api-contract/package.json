@@ -1,0 +1,16 @@
+{
+  "name": "@buyme/api-contract",
+  "version": "1.0.0",
+  "description": "Shared API Contracts, Types, and Zod Schemas for BuyMe",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,0 +1,908 @@
+// BuyMe Hyperlocal Multi-Store Grocery Delivery Platform
+// Database Schema — PostgreSQL (Batticaloa District, Sri Lanka)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// ENUMS
+// -----------------------------------------------------------------------------
+
+enum Role {
+  SUPER_ADMIN
+  STORE_ADMIN
+  RIDER
+  CUSTOMER
+  SYSTEM
+}
+
+enum RiderType {
+  EMPLOYEE
+  FREELANCE
+}
+
+enum KycStatus {
+  REGISTERED
+  KYC_SUBMITTED
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum TransferStatus {
+  DRAFT
+  DISPATCHED
+  RECEIVED_FULL
+  RECEIVED_PARTIAL
+  RESOLVED
+  CANCELLED
+}
+
+enum TransferItemStatus {
+  PENDING
+  MATCHED
+  DISCREPANT
+  RESOLVED_WRITE_OFF
+  RESOLVED_REVERTED
+}
+
+enum StockMovementType {
+  MASTER_ENTRY
+  TRANSFER_DISPATCH
+  TRANSFER_RECEIPT
+  TRANSFER_REVERT
+  TRANSFER_DISCREPANCY_WRITE_OFF
+  ORDER_RESERVATION
+  ORDER_FULFILLMENT
+  ORDER_CANCEL_RESTOCK
+  MANUAL_ADJUSTMENT
+}
+
+enum LocationType {
+  WAREHOUSE
+  STORE
+  IN_TRANSIT
+  CUSTOMER
+  SUPPLIER
+  WRITE_OFF
+}
+
+enum OrderStatus {
+  PLACED
+  ACCEPTED
+  REJECTED
+  PREPARING
+  READY
+  RIDER_ASSIGNED
+  PICKED_UP
+  ON_THE_WAY
+  DELIVERED
+  CANCELLED
+  FAILED
+}
+
+enum PaymentMethod {
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  COLLECTED_BY_RIDER
+  DEPOSITED_TO_STORE
+  CANCELLED
+}
+
+enum DepositStatus {
+  PENDING
+  APPROVED
+  VARIANCE
+  APPROVED_WITH_VARIANCE
+  REJECTED
+}
+
+enum DepositVarianceStatus {
+  OPEN
+  RESOLVED_APPROVED
+  RESOLVED_REJECTED
+}
+
+enum CampaignType {
+  FREE_DELIVERY
+  FIXED_DISCOUNT
+  PERCENTAGE_DISCOUNT
+}
+
+enum RiderCashEntryType {
+  OPENING_BALANCE
+  DELIVERY_COLLECTION
+  DEPOSIT_SETTLEMENT
+  VARIANCE_ADJUSTMENT
+}
+
+enum NotificationChannel {
+  PUSH
+  SMS
+  EMAIL
+  IN_APP
+}
+
+enum NotificationStatus {
+  QUEUED
+  PROCESSING
+  SENT
+  DELIVERED
+  FAILED
+}
+
+enum OtpPurpose {
+  LOGIN
+  RIDER_LOGIN
+  REGISTRATION
+  PHONE_VERIFICATION
+  PASSWORD_RESET
+  ADMIN_2FA
+}
+
+// -----------------------------------------------------------------------------
+// USER & AUTHENTICATION
+// -----------------------------------------------------------------------------
+
+model User {
+  id                 String   @id @default(uuid()) @db.Uuid
+  phone              String?  @unique @db.VarChar(20)
+  email              String?  @unique @db.VarChar(255)
+  passwordHash       String?  @db.VarChar(255)
+  role               Role
+  fullName           String   @db.VarChar(150)
+  isActive           Boolean  @default(true)
+  isDemoAccount      Boolean  @default(false)
+  isTwoFactorEnabled Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relationships
+  deviceSessions               DeviceSession[]
+  riderProfile                 RiderProfile?
+  customerProfile              CustomerProfile?
+  storeAdminAssignment         StoreAdmin?
+  auditLogs                    AuditLog[]
+  notifications                Notification[]
+  cashLedgerEntries            RiderCashLedgerEntry[]
+  openedDepositVarianceCases   RiderDepositVarianceCase[] @relation("DepositVarianceOpenedBy")
+  resolvedDepositVarianceCases RiderDepositVarianceCase[] @relation("DepositVarianceResolvedBy")
+
+  // Action Logs
+  dispatchedTransfers   StockTransfer[] @relation("DispatchedBy")
+  receivedTransfers     StockTransfer[] @relation("ReceivedBy")
+  resolvedTransfers     StockTransfer[] @relation("ResolvedBy")
+  verifiedDeposits      RiderDeposit[]  @relation("VerifiedBy")
+  approvedRiders        RiderProfile[]  @relation("ApprovedBy")
+  stockMovementsCreated StockMovement[] @relation("MovementCreator")
+
+  @@index([role, isActive])
+  @@index([phone])
+  @@index([email])
+}
+
+model DeviceSession {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @db.Uuid
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokenHash String   @unique @db.VarChar(255)
+  deviceId         String   @db.VarChar(100)
+  pushToken        String?  @unique @db.VarChar(512)
+  deviceInfo       String?  @db.VarChar(255)
+  ipAddress        String?  @db.VarChar(45)
+  userAgent        String?  @db.Text
+  isRevoked        Boolean  @default(false)
+  expiresAt        DateTime
+  createdAt        DateTime @default(now())
+  lastUsedAt       DateTime @default(now())
+
+  @@index([userId, isRevoked])
+  @@index([refreshTokenHash])
+}
+
+model OtpRequest {
+  id            String     @id @default(uuid()) @db.Uuid
+  destination   String     @db.VarChar(100) // phone or email
+  purpose       OtpPurpose
+  codeHash      String     @db.VarChar(255)
+  attemptsCount Int        @default(0)
+  isUsed        Boolean    @default(false)
+  expiresAt     DateTime
+  createdAt     DateTime   @default(now())
+
+  @@index([destination, purpose, isUsed])
+  @@index([expiresAt])
+}
+
+// -----------------------------------------------------------------------------
+// FACILITIES: WAREHOUSE & STORES
+// -----------------------------------------------------------------------------
+
+model Warehouse {
+  id           String   @id @default(uuid()) @db.Uuid
+  code         String   @unique @db.VarChar(20) // e.g. "WH-MAIN"
+  name         String   @db.VarChar(150)
+  address      String   @db.Text
+  latitude     Decimal  @db.Decimal(10, 7)
+  longitude    Decimal  @db.Decimal(10, 7)
+  contactPhone String   @db.VarChar(20)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  inventories   MasterInventory[]
+  transfersFrom StockTransfer[]
+
+  @@index([latitude, longitude])
+}
+
+model Store {
+  id                    String   @id @default(uuid()) @db.Uuid
+  code                  String   @unique @db.VarChar(20) // "BM-S01" to "BM-S10"
+  name                  String   @db.VarChar(150)
+  slug                  String   @unique @db.VarChar(100)
+  address               String   @db.Text
+  locality              String   @db.VarChar(100) // Puliyanthivu, Kattankudy, Eravur...
+  latitude              Decimal  @db.Decimal(10, 7)
+  longitude             Decimal  @db.Decimal(10, 7)
+  contactPhone          String   @db.VarChar(20)
+  contactEmail          String?  @db.VarChar(255)
+  isActive              Boolean  @default(true)
+  openingTime           String   @default("07:00") @db.VarChar(5) // HH:mm
+  closingTime           String   @default("22:00") @db.VarChar(5) // HH:mm
+  serviceRadiusKm       Decimal  @default(10.0) @db.Decimal(5, 2)
+  serviceAreaPolygon    Json? // GeoJSON Polygon coordinates
+  allowPriceOverride    Boolean  @default(false)
+  minOrderAmount        Decimal  @default(500.00) @db.Decimal(10, 2)
+  freeDeliveryThreshold Decimal  @default(5000.00) @db.Decimal(10, 2)
+  cashHoldThreshold     Decimal  @default(10000.00) @db.Decimal(10, 2)
+  cashHoldMaxHours      Int      @default(4)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relationships
+  storeAdmins   StoreAdmin[]
+  deliveryZones DeliveryZone[]
+  storeProducts StoreProduct[]
+  carts         Cart[]
+  transfersTo   StockTransfer[]
+  riders        RiderProfile[]
+  orders        Order[]
+  storeAlerts   StoreAlert[]
+  campaigns     Campaign[]
+  cashLedger    RiderCashLedgerEntry[]
+  varianceCases RiderDepositVarianceCase[]
+
+  @@index([latitude, longitude])
+  @@index([isActive])
+}
+
+model StoreAdmin {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storeId   String   @db.Uuid
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([storeId])
+}
+
+model DeliveryZone {
+  id                      String   @id @default(uuid()) @db.Uuid
+  storeId                 String   @db.Uuid
+  store                   Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  zoneNumber              Int // 1 to 5
+  name                    String   @db.VarChar(100)
+  polygonCoordinates      Json? // GeoJSON Polygon
+  radiusKm                Decimal? @db.Decimal(5, 2)
+  baseFee                 Decimal  @db.Decimal(10, 2)
+  minOrderForFreeDelivery Decimal  @default(5000.00) @db.Decimal(10, 2)
+  estimatedDeliveryMins   Int      @default(30)
+  isActive                Boolean  @default(true)
+  createdAt               DateTime @default(now())
+
+  orders Order[]
+
+  @@unique([storeId, zoneNumber])
+  @@index([storeId, isActive])
+}
+
+// -----------------------------------------------------------------------------
+// MASTER CATALOG & INVENTORY
+// -----------------------------------------------------------------------------
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique @db.VarChar(100)
+  nameTa    String?  @db.VarChar(100)
+  slug      String   @unique @db.VarChar(100)
+  icon      String?  @db.VarChar(50)
+  imageUrl  String?  @db.VarChar(500)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  masterProducts MasterProduct[]
+
+  @@index([isActive, sortOrder])
+}
+
+model MasterProduct {
+  id               String   @id @default(uuid()) @db.Uuid
+  barcode          String   @unique @db.VarChar(100)
+  sku              String   @unique @db.VarChar(50)
+  name             String   @db.VarChar(200)
+  nameTa           String?  @db.VarChar(200)
+  description      String?  @db.Text
+  categoryId       String   @db.Uuid
+  category         Category @relation(fields: [categoryId], references: [id])
+  unit             String   @db.VarChar(20) // kg, g, l, ml, pack, piece
+  costPrice        Decimal  @db.Decimal(10, 2)
+  baseSellingPrice Decimal  @db.Decimal(10, 2)
+  imageUrl         String?  @db.VarChar(500)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  inventories    MasterInventory[]
+  storeProducts  StoreProduct[]
+  transferItems  StockTransferItem[]
+  stockMovements StockMovement[]
+  barcodes       MasterProductBarcode[]
+  alerts         StoreAlert[]
+
+  @@index([barcode])
+  @@index([name])
+  @@index([categoryId, isActive])
+}
+
+model MasterProductBarcode {
+  id              String        @id @default(uuid()) @db.Uuid
+  masterProductId String        @db.Uuid
+  masterProduct   MasterProduct @relation(fields: [masterProductId], references: [id], onDelete: Cascade)
+  barcode         String        @unique @db.VarChar(100)
+  createdAt       DateTime      @default(now())
+
+  @@index([masterProductId])
+}
+
+model MasterInventory {
+  id               String        @id @default(uuid()) @db.Uuid
+  warehouseId      String        @db.Uuid
+  warehouse        Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  masterProductId  String        @db.Uuid
+  masterProduct    MasterProduct @relation(fields: [masterProductId], references: [id], onDelete: Cascade)
+  quantityOnHand   Int           @default(0)
+  quantityReserved Int           @default(0) // Reserved for dispatched transfers
+  reorderLevel     Int           @default(50)
+  updatedAt        DateTime      @updatedAt
+
+  @@unique([warehouseId, masterProductId])
+  @@index([warehouseId])
+  @@index([masterProductId])
+}
+
+model StoreProduct {
+  id               String        @id @default(uuid()) @db.Uuid
+  storeId          String        @db.Uuid
+  store            Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  masterProductId  String        @db.Uuid
+  masterProduct    MasterProduct @relation(fields: [masterProductId], references: [id], onDelete: Cascade)
+  customPrice      Decimal?      @db.Decimal(10, 2) // Optional store-specific price override
+  isAvailable      Boolean       @default(true)
+  quantityOnHand   Int           @default(0)
+  quantityReserved Int           @default(0) // Reserved for active customer orders
+  reorderLevel     Int           @default(10)
+  updatedAt        DateTime      @updatedAt
+
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+
+  @@unique([storeId, masterProductId])
+  @@index([storeId, isAvailable])
+  @@index([masterProductId])
+}
+
+model StockMovement {
+  id               String            @id @default(uuid()) @db.Uuid
+  movementType     StockMovementType
+  referenceId      String?           @db.VarChar(100) // Transfer ID, Order ID, Adjustment ID
+  fromLocationType LocationType
+  fromLocationId   String?           @db.VarChar(100)
+  toLocationType   LocationType
+  toLocationId     String?           @db.VarChar(100)
+  masterProductId  String            @db.Uuid
+  masterProduct    MasterProduct     @relation(fields: [masterProductId], references: [id])
+  quantity         Int
+  unitCost         Decimal           @db.Decimal(10, 2)
+  unitPrice        Decimal?          @db.Decimal(10, 2)
+  reason           String?           @db.Text
+  createdByUserId  String?           @db.Uuid
+  createdByUser    User?             @relation("MovementCreator", fields: [createdByUserId], references: [id])
+  createdAt        DateTime          @default(now())
+
+  @@index([movementType, referenceId])
+  @@index([masterProductId, createdAt])
+  @@index([fromLocationType, fromLocationId])
+  @@index([toLocationType, toLocationId])
+}
+
+// -----------------------------------------------------------------------------
+// STOCK TRANSFERS (MAIN WAREHOUSE -> STORE)
+// -----------------------------------------------------------------------------
+
+model StockTransfer {
+  id              String         @id @default(uuid()) @db.Uuid
+  transferNumber  String         @unique @db.VarChar(50) // "TRF-2026-XXXX"
+  fromWarehouseId String         @db.Uuid
+  fromWarehouse   Warehouse      @relation(fields: [fromWarehouseId], references: [id])
+  toStoreId       String         @db.Uuid
+  toStore         Store          @relation(fields: [toStoreId], references: [id])
+  status          TransferStatus @default(DRAFT)
+
+  dispatchedByUserId String?   @db.Uuid
+  dispatchedByUser   User?     @relation("DispatchedBy", fields: [dispatchedByUserId], references: [id])
+  dispatchedAt       DateTime?
+
+  receivedByUserId String?   @db.Uuid
+  receivedByUser   User?     @relation("ReceivedBy", fields: [receivedByUserId], references: [id])
+  receivedAt       DateTime?
+
+  resolvedByUserId String?   @db.Uuid
+  resolvedByUser   User?     @relation("ResolvedBy", fields: [resolvedByUserId], references: [id])
+  resolvedAt       DateTime?
+  resolutionNote   String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items StockTransferItem[]
+
+  @@index([fromWarehouseId, status])
+  @@index([toStoreId, status])
+  @@index([transferNumber])
+}
+
+model StockTransferItem {
+  id                  String             @id @default(uuid()) @db.Uuid
+  transferId          String             @db.Uuid
+  transfer            StockTransfer      @relation(fields: [transferId], references: [id], onDelete: Cascade)
+  masterProductId     String             @db.Uuid
+  masterProduct       MasterProduct      @relation(fields: [masterProductId], references: [id])
+  requestedQuantity   Int
+  dispatchedQuantity  Int                @default(0)
+  receivedQuantity    Int?
+  discrepancyQuantity Int?               @default(0) // dispatchedQuantity - receivedQuantity
+  itemStatus          TransferItemStatus @default(PENDING)
+  notes               String?            @db.Text
+
+  @@unique([transferId, masterProductId])
+  @@index([transferId, itemStatus])
+}
+
+// -----------------------------------------------------------------------------
+// RIDERS, KYC & CASH METERS
+// -----------------------------------------------------------------------------
+
+model RiderProfile {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @unique @db.Uuid
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  riderType       RiderType @default(EMPLOYEE)
+  kycStatus       KycStatus @default(REGISTERED)
+  assignedStoreId String?   @db.Uuid
+  assignedStore   Store?    @relation(fields: [assignedStoreId], references: [id])
+
+  // KYC Documents (Private signed storage)
+  bikeNumber              String? @db.VarChar(50)
+  bikeModel               String? @db.VarChar(100)
+  drivingLicenceNumber    String? @db.VarChar(50)
+  drivingLicencePhotoUrl  String? @db.VarChar(500)
+  revenueLicencePhotoUrl  String? @db.VarChar(500)
+  drivingLicenceObjectKey String? @unique @db.VarChar(500)
+  vehicleLicenceObjectKey String? @unique @db.VarChar(500)
+  rejectionReason         String? @db.Text
+
+  approvedByUserId String?   @db.Uuid
+  approvedByUser   User?     @relation("ApprovedBy", fields: [approvedByUserId], references: [id])
+  approvedAt       DateTime?
+
+  // Shift & Telemetry
+  isShiftActive      Boolean   @default(false)
+  currentLocationLat Decimal?  @db.Decimal(10, 7)
+  currentLocationLng Decimal?  @db.Decimal(10, 7)
+  lastLocationUpdate DateTime?
+
+  // Cash Control Meter
+  cashInHand               Decimal   @default(0.00) @db.Decimal(10, 2)
+  oldestCashCollectionTime DateTime?
+  isCashLocked             Boolean   @default(false)
+  cashLockReason           String?   @db.Text
+  depositPending           Boolean   @default(false)
+
+  rating                   Decimal  @default(5.00) @db.Decimal(3, 2)
+  totalCompletedDeliveries Int      @default(0)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  deposits        RiderDeposit[]
+  orders          Order[]
+  locationHistory RiderLocationHistory[]
+  cashLedger      RiderCashLedgerEntry[]
+  varianceCases   RiderDepositVarianceCase[]
+
+  @@index([assignedStoreId, isShiftActive, isCashLocked])
+  @@index([kycStatus])
+  @@index([currentLocationLat, currentLocationLng])
+}
+
+model RiderDeposit {
+  id            String        @id @default(uuid()) @db.Uuid
+  depositNumber String        @unique @db.VarChar(50) // "DEP-2026-XXXX"
+  riderId       String        @db.Uuid
+  rider         RiderProfile  @relation(fields: [riderId], references: [id], onDelete: Cascade)
+  storeId       String        @db.Uuid
+  amount        Decimal       @db.Decimal(10, 2)
+  bankRefNumber String        @db.VarChar(100)
+  slipImageUrl  String        @db.VarChar(500) // Private storage signed URL
+  status        DepositStatus @default(PENDING)
+  submittedAt   DateTime      @default(now())
+
+  verifiedByUserId String?   @db.Uuid
+  verifiedByUser   User?     @relation("VerifiedBy", fields: [verifiedByUserId], references: [id])
+  verifiedAt       DateTime?
+  rejectionReason  String?   @db.Text
+  receivedAmount   Decimal?  @db.Decimal(10, 2)
+  varianceAmount   Decimal?  @db.Decimal(10, 2)
+  varianceReason   String?   @db.Text
+  notes            String?   @db.Text
+
+  varianceCase  RiderDepositVarianceCase?
+  ledgerEntries RiderCashLedgerEntry[]
+
+  @@index([riderId, status])
+  @@index([storeId, status])
+  @@index([depositNumber])
+}
+
+model RiderLocationHistory {
+  id         String       @id @default(uuid()) @db.Uuid
+  riderId    String       @db.Uuid
+  rider      RiderProfile @relation(fields: [riderId], references: [id], onDelete: Cascade)
+  orderId    String?      @db.Uuid
+  latitude   Decimal      @db.Decimal(10, 7)
+  longitude  Decimal      @db.Decimal(10, 7)
+  heading    Decimal?     @db.Decimal(5, 2)
+  speedKmh   Decimal?     @db.Decimal(5, 2)
+  recordedAt DateTime     @default(now())
+
+  @@index([riderId, recordedAt])
+  @@index([orderId, recordedAt])
+  @@index([latitude, longitude])
+}
+
+model RiderCashLedgerEntry {
+  id           String             @id @default(uuid()) @db.Uuid
+  riderId      String             @db.Uuid
+  rider        RiderProfile       @relation(fields: [riderId], references: [id], onDelete: Restrict)
+  storeId      String             @db.Uuid
+  store        Store              @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  entryType    RiderCashEntryType
+  amount       Decimal            @db.Decimal(10, 2)
+  balanceAfter Decimal            @db.Decimal(10, 2)
+  orderId      String?            @unique @db.Uuid
+  order        Order?             @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  depositId    String?            @db.Uuid
+  deposit      RiderDeposit?      @relation(fields: [depositId], references: [id], onDelete: Restrict)
+  actorUserId  String?            @db.Uuid
+  actorUser    User?              @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  note         String?            @db.Text
+  createdAt    DateTime           @default(now())
+
+  @@unique([depositId, entryType])
+  @@index([storeId, createdAt])
+  @@index([riderId, createdAt])
+  @@index([entryType, createdAt])
+}
+
+model RiderDepositVarianceCase {
+  id               String                @id @default(uuid()) @db.Uuid
+  depositId        String                @unique @db.Uuid
+  deposit          RiderDeposit          @relation(fields: [depositId], references: [id], onDelete: Restrict)
+  riderId          String                @db.Uuid
+  rider            RiderProfile          @relation(fields: [riderId], references: [id], onDelete: Restrict)
+  storeId          String                @db.Uuid
+  store            Store                 @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  expectedAmount   Decimal               @db.Decimal(10, 2)
+  receivedAmount   Decimal               @db.Decimal(10, 2)
+  varianceAmount   Decimal               @db.Decimal(10, 2)
+  reason           String                @db.Text
+  status           DepositVarianceStatus @default(OPEN)
+  openedByUserId   String                @db.Uuid
+  openedBy         User                  @relation("DepositVarianceOpenedBy", fields: [openedByUserId], references: [id], onDelete: Restrict)
+  resolvedByUserId String?               @db.Uuid
+  resolvedBy       User?                 @relation("DepositVarianceResolvedBy", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+  resolutionNote   String?               @db.Text
+  openedAt         DateTime              @default(now())
+  resolvedAt       DateTime?
+
+  @@index([storeId, status, openedAt])
+  @@index([riderId, status])
+}
+
+// -----------------------------------------------------------------------------
+// CUSTOMERS & SAVED ADDRESSES
+// -----------------------------------------------------------------------------
+
+model CustomerProfile {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @unique @db.Uuid
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  loyaltyPoints Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  addresses Address[]
+  orders    Order[]
+  carts     Cart[]
+
+  @@index([userId])
+}
+
+model Address {
+  id             String          @id @default(uuid()) @db.Uuid
+  customerId     String          @db.Uuid
+  customer       CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label          String          @default("Home") @db.VarChar(50) // Home, Work, Other
+  recipientName  String          @db.VarChar(100)
+  recipientPhone String          @db.VarChar(20)
+  streetAddress  String          @db.Text
+  landmark       String?         @db.VarChar(150)
+  locality       String          @db.VarChar(100) // Puliyanthivu, Kallady, Kattankudy...
+  latitude       Decimal         @db.Decimal(10, 7)
+  longitude      Decimal         @db.Decimal(10, 7)
+  isDefault      Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  orders Order[]
+
+  @@index([customerId, isDefault])
+  @@index([latitude, longitude])
+}
+
+model Cart {
+  id         String          @id @default(uuid()) @db.Uuid
+  customerId String          @db.Uuid
+  customer   CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  storeId    String          @db.Uuid
+  store      Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  items      CartItem[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([customerId, storeId])
+  @@index([storeId])
+}
+
+model CartItem {
+  id             String       @id @default(uuid()) @db.Uuid
+  cartId         String       @db.Uuid
+  cart           Cart         @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  storeProductId String       @db.Uuid
+  storeProduct   StoreProduct @relation(fields: [storeProductId], references: [id], onDelete: Cascade)
+  quantity       Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([cartId, storeProductId])
+  @@index([cartId])
+}
+
+// -----------------------------------------------------------------------------
+// ORDERS & DELIVERIES
+// -----------------------------------------------------------------------------
+
+model Order {
+  id                      String          @id @default(uuid()) @db.Uuid
+  orderNumber             String          @unique @db.VarChar(50) // "ORD-2026-XXXX"
+  customerId              String          @db.Uuid
+  customer                CustomerProfile @relation(fields: [customerId], references: [id])
+  storeId                 String          @db.Uuid
+  store                   Store           @relation(fields: [storeId], references: [id])
+  deliveryAddressId       String?         @db.Uuid
+  deliveryAddress         Address?        @relation(fields: [deliveryAddressId], references: [id])
+  deliveryAddressSnapshot Json // Immutable copy of address at checkout
+  deliveryZoneId          String?         @db.Uuid
+  deliveryZone            DeliveryZone?   @relation(fields: [deliveryZoneId], references: [id])
+
+  status        OrderStatus   @default(PLACED)
+  paymentMethod PaymentMethod @default(COD)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  subtotal    Decimal @db.Decimal(10, 2)
+  deliveryFee Decimal @default(0.00) @db.Decimal(10, 2)
+  discount    Decimal @default(0.00) @db.Decimal(10, 2)
+  totalAmount Decimal @db.Decimal(10, 2)
+
+  riderId String?       @db.Uuid
+  rider   RiderProfile? @relation(fields: [riderId], references: [id])
+
+  storeAcceptTimeoutAt DateTime?
+  assignedAt           DateTime?
+  acceptedAt           DateTime?
+  pickedUpAt           DateTime?
+  deliveredAt          DateTime?
+  cancelledAt          DateTime?
+  cancellationReason   String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items      OrderItem[]
+  timeline   OrderTimeline[]
+  alerts     StoreAlert[]
+  campaigns  OrderCampaign[]
+  cashLedger RiderCashLedgerEntry[]
+
+  @@index([storeId, status])
+  @@index([customerId, status])
+  @@index([riderId, status])
+  @@index([orderNumber])
+  @@index([createdAt])
+  @@index([status, storeAcceptTimeoutAt])
+}
+
+model Campaign {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @db.VarChar(100)
+  code        String?      @unique @db.VarChar(40)
+  storeId     String?      @db.Uuid
+  store       Store?       @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  type        CampaignType
+  value       Decimal      @db.Decimal(10, 2)
+  minSubtotal Decimal      @default(0) @db.Decimal(10, 2)
+  maxDiscount Decimal?     @db.Decimal(10, 2)
+  startsAt    DateTime
+  endsAt      DateTime
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  appliedOrders OrderCampaign[]
+
+  @@index([storeId, isActive, startsAt, endsAt])
+}
+
+model OrderCampaign {
+  id                String   @id @default(uuid()) @db.Uuid
+  orderId           String   @db.Uuid
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  campaignId        String   @db.Uuid
+  campaign          Campaign @relation(fields: [campaignId], references: [id], onDelete: Restrict)
+  campaignName      String   @db.VarChar(100)
+  campaignCode      String?  @db.VarChar(40)
+  discountAmount    Decimal  @db.Decimal(10, 2)
+  deliveryFeeWaived Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  @@unique([orderId, campaignId])
+  @@index([campaignId, createdAt])
+}
+
+model OrderItem {
+  id             String       @id @default(uuid()) @db.Uuid
+  orderId        String       @db.Uuid
+  order          Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  storeProductId String       @db.Uuid
+  storeProduct   StoreProduct @relation(fields: [storeProductId], references: [id])
+  productName    String       @db.VarChar(200)
+  productUnit    String       @db.VarChar(20)
+  unitPrice      Decimal      @db.Decimal(10, 2)
+  quantity       Int
+  totalPrice     Decimal      @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([storeProductId])
+}
+
+model OrderTimeline {
+  id        String      @id @default(uuid()) @db.Uuid
+  orderId   String      @db.Uuid
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  actorRole Role
+  actorId   String?     @db.Uuid
+  note      String?     @db.Text
+  createdAt DateTime    @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// NOTIFICATIONS & STORE REAL-TIME ALERTS
+// -----------------------------------------------------------------------------
+
+model Notification {
+  id              String              @id @default(uuid()) @db.Uuid
+  recipientUserId String              @db.Uuid
+  recipient       User                @relation(fields: [recipientUserId], references: [id], onDelete: Cascade)
+  channel         NotificationChannel
+  title           String              @db.VarChar(200)
+  body            String              @db.Text
+  metadata        Json?
+  status          NotificationStatus  @default(QUEUED)
+  failureReason   String?             @db.Text
+  processingAt    DateTime?
+  attemptCount    Int                 @default(0)
+  sentAt          DateTime?
+  createdAt       DateTime            @default(now())
+
+  @@index([recipientUserId, status])
+  @@index([channel, status])
+}
+
+model StoreAlert {
+  id              String         @id @default(uuid()) @db.Uuid
+  storeId         String         @db.Uuid
+  store           Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  masterProductId String?        @db.Uuid
+  masterProduct   MasterProduct? @relation(fields: [masterProductId], references: [id], onDelete: SetNull)
+  orderId         String?        @db.Uuid
+  order           Order?         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  alertType       String         @db.VarChar(50) // "NEW_ORDER", "TIMEOUT_WARNING", "DISPATCH"
+  details         Json?
+  isAcknowledged  Boolean        @default(false)
+  acknowledgedAt  DateTime?
+  createdAt       DateTime       @default(now())
+
+  @@unique([storeId, masterProductId, alertType, isAcknowledged])
+  @@index([storeId, isAcknowledged])
+  @@index([orderId])
+}
+
+// -----------------------------------------------------------------------------
+// AUDIT LOG & RATE LIMITING
+// -----------------------------------------------------------------------------
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String?  @db.Uuid
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userRole   Role?
+  action     String   @db.VarChar(100) // e.g. "STOCK_TRANSFER_RESOLVE", "KYC_APPROVE"
+  entityType String   @db.VarChar(50) // "StockTransfer", "RiderProfile", "Order"
+  entityId   String   @db.VarChar(100)
+  oldValues  Json?
+  newValues  Json?
+  ipAddress  String?  @db.VarChar(45)
+  userAgent  String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+  @@index([action])
+}
+
+model RateLimitRecord {
+  id           String    @id @default(uuid()) @db.Uuid
+  key          String    @db.VarChar(150) // IP or phone or user identifier
+  endpoint     String    @db.VarChar(100)
+  hitCount     Int       @default(1)
+  windowStart  DateTime  @default(now())
+  blockedUntil DateTime?
+
+  @@unique([key, endpoint])
+  @@index([key, endpoint])
+  @@index([blockedUntil])
+}

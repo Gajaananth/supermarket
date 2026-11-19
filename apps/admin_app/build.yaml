@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      swagger_dart_code_generator:
+        options:
+          input_folder: lib/openapi
+          output_folder: lib/api/generated
+          with_base_url: false
+          include_paths:
+            - /api/v1/auth/.*
+            - /api/v1/stores.*
+            - /api/v1/warehouse/.*
+            - /api/v1/transfers.*
+            - /api/v1/orders.*
+            - /api/v1/cash-control/.*
+            - /api/v1/reports/.*
+            - /api/v1/riders/.*

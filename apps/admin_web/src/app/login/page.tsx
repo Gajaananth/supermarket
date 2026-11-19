@@ -1,220 +1,248 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
-import Link from "next/link";
+import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Shield, Store, Bike, User, ArrowRight } from "lucide-react";
+import { ArrowLeft, KeyRound, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function messageFromBody(value: unknown): string {
+  if (isRecord(value) && typeof value.message === "string") return value.message;
+  return "Sign-in could not be completed.";
+}
 
 function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get("redirect");
+  const params = useSearchParams();
+  const requestedRedirect = params.get("redirect");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [twoFactorEmail, setTwoFactorEmail] = useState("");
+  const [demoCode, setDemoCode] = useState("");
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const [phone, setPhone] = useState("+94 77 123 4567");
-  const [password, setPassword] = useState("demo123");
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    setSubmitting(true);
+    try {
+      const response = await fetch(
+        requiresTwoFactor ? "/api/auth/admin/verify-2fa" : "/api/auth/admin/login",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(
+            requiresTwoFactor
+              ? { email: twoFactorEmail, code }
+              : { email, password },
+          ),
+        },
+      );
+      const body: unknown = await response.json();
+      if (!response.ok) {
+        setError(messageFromBody(body));
+        return;
+      }
 
-  const setDemoSessionAndGo = (role: string, name: string, defaultPath: string, extra = {}) => {
-    const session = {
-      role,
-      name,
-      createdAt: new Date().toISOString(),
-      ...extra,
-    };
-    localStorage.setItem("buyme_session", JSON.stringify(session));
-    const target = redirectUrl || defaultPath;
-    router.push(target);
+      if (
+        !requiresTwoFactor &&
+        isRecord(body) &&
+        body.requires2fa === true &&
+        typeof body.email === "string"
+      ) {
+        setTwoFactorEmail(body.email);
+        setDemoCode(typeof body.demoCode === "string" && /^\d{6}$/.test(body.demoCode) ? body.demoCode : "");
+        setRequiresTwoFactor(true);
+        return;
+      }
+
+      const role = isRecord(body) && isRecord(body.user) ? body.user.role : undefined;
+      const allowedRedirects = role === "STORE_ADMIN"
+        ? ["/admin/orders", "/admin/store-stock", "/admin/transfers", "/admin/deposits"]
+        : ["/admin/overview", "/admin/inventory", "/admin/transfers", "/admin/stores", "/admin/riders", "/admin/reports"];
+      const fallback = role === "STORE_ADMIN" ? "/admin/orders" : "/admin/overview";
+      const destination = requestedRedirect && allowedRedirects.includes(requestedRedirect)
+        ? requestedRedirect
+        : fallback;
+      router.replace(destination);
+      router.refresh();
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "The sign-in request failed.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleManualSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setDemoSessionAndGo("main_admin", "Admin Staff", "/admin/overview");
-  };
+  const phaseNotice = params.get("phase") === "not-started";
+  const logoutNotice = params.get("error") === "logout";
 
   return (
-    <div className="w-full max-w-lg glass-surface-elevated rounded-3xl p-6 sm:p-8 relative z-10 border border-white/80 shadow-2xl space-y-6">
-      {/* Brand Header */}
-      <div className="text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200/80 mb-3">
-          <span className="w-2 h-2 rounded-full bg-[#E4002B] animate-pulse"></span>
-          <span className="text-[11px] font-bold text-[#E4002B] tracking-wider uppercase">
-            Batticaloa District • 10 Hubs
-          </span>
-        </div>
-        <h1 className="text-3xl font-extrabold text-[#1F2430] tracking-tight">
-          Buy<span className="text-[#E4002B]">Me</span> Platform
-        </h1>
-        <p className="text-xs text-[#6B7280] mt-1">Select a verified demo profile to access portal</p>
-      </div>
-
-      {/* 1-Click Demo Profiles */}
-      <div className="space-y-2.5">
-        <label className="block text-xs font-bold text-[#1F2430] uppercase tracking-wider">
-          1-Click Demo Accounts
-        </label>
-
-        <button
-          type="button"
-          onClick={() =>
-            setDemoSessionAndGo(
-              "main_admin",
-              "Naveen Raj (HQ Executive)",
-              "/admin/overview",
-              { title: "Main Admin", hub: "All 10 Hubs" }
-            )
-          }
-          className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 hover:border-[#E4002B] flex items-center justify-between text-left transition-all hover:shadow-md group"
-        >
+    <main className="aurora-bg relative flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
+      <div className="relative z-10 grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/80 bg-white/90 shadow-[0_24px_80px_rgba(31,36,48,0.12)] backdrop-blur-2xl lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="hidden min-h-[580px] flex-col justify-between bg-gradient-to-br from-buyme-primary via-[#d00029] to-buyme-primary-deep p-10 text-white lg:flex">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-red-50 text-[#E4002B] flex items-center justify-center font-bold">
-              <Shield className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-[#1F2430] group-hover:text-[#E4002B] transition-colors">
-                Main Admin (HQ Executive)
-              </div>
-              <div className="text-[11px] text-gray-500">Full district control • All 10 store hubs</div>
-            </div>
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 font-heading text-2xl font-extrabold">B</span>
+            <span className="font-heading text-2xl font-extrabold">BuyMe</span>
           </div>
-          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-[#E4002B] group-hover:translate-x-0.5 transition-all" />
-        </button>
+          <div className="max-w-md">
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em]">
+              <ShieldCheck size={15} aria-hidden="true" />
+              Operations access
+            </p>
+            <h1 className="font-heading text-4xl font-extrabold leading-tight">
+              Run every store with clarity.
+            </h1>
+            <p className="mt-4 max-w-sm text-sm leading-7 text-white/85">
+              A secure control room for main inventory, stock transfers, store settings, rider verification, and reporting.
+            </p>
+          </div>
+          <p className="text-xs font-medium text-white/75">Batticaloa District • Sri Lanka</p>
+        </section>
 
-        <button
-          type="button"
-          onClick={() =>
-            setDemoSessionAndGo(
-              "store_admin",
-              "S. Thevarajah (Manager)",
-              "/admin/overview",
-              { title: "Store Admin", hub: "BM-S01 Batticaloa Town" }
-            )
-          }
-          className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 hover:border-[#E4002B] flex items-center justify-between text-left transition-all hover:shadow-md group"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
-              <Store className="w-4 h-4" />
+        <section className="flex min-h-[580px] flex-col justify-center p-6 sm:p-10 lg:p-12">
+          <div className="mb-8 lg:hidden">
+            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-buyme-primary to-buyme-primary-deep font-heading text-2xl font-extrabold text-white">
+              B
             </div>
-            <div>
-              <div className="text-xs font-bold text-[#1F2430] group-hover:text-[#E4002B] transition-colors">
-                Store Admin (Batticaloa Town)
-              </div>
-              <div className="text-[11px] text-gray-500">Store-scoped stock, order dispatch & cash drops</div>
-            </div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-buyme-primary">BuyMe operations</p>
           </div>
-          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-[#E4002B] group-hover:translate-x-0.5 transition-all" />
-        </button>
+          <p className="text-xs font-bold uppercase tracking-[0.15em] text-buyme-primary">
+            {requiresTwoFactor ? "Additional verification" : "Admin portal"}
+          </p>
+          <h2 className="mt-2 font-heading text-3xl font-extrabold tracking-tight text-buyme-navy">
+            {requiresTwoFactor ? "Verify your sign-in" : "Welcome back"}
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            {requiresTwoFactor
+              ? demoCode
+                ? "Use the staging demo code shown below."
+                : `Enter the six-digit code sent to ${twoFactorEmail}.`
+              : "Sign in with your admin email and password."}
+          </p>
 
-        <button
-          type="button"
-          onClick={() =>
-            setDemoSessionAndGo(
-              "rider",
-              "Kajan Sivanesan (RDR-001)",
-              "/rider",
-              { vehicle: "TVS Raider (BA-8821)", storeId: "BM-S01" }
-            )
-          }
-          className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 hover:border-[#E4002B] flex items-center justify-between text-left transition-all hover:shadow-md group"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
-              <Bike className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-[#1F2430] group-hover:text-[#E4002B] transition-colors">
-                Rider Courier (Express Logistics)
-              </div>
-              <div className="text-[11px] text-gray-500">Live active shift • Doorstep COD collection</div>
-            </div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-[#E4002B] group-hover:translate-x-0.5 transition-all" />
-        </button>
+          {phaseNotice && (
+            <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950" role="status">
+              This portal is scheduled for a later implementation gate.
+            </p>
+          )}
+          {logoutNotice && (
+            <p className="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950" role="status">
+              Your browser session was cleared, but the server could not confirm revocation. Sign in again or contact an administrator.
+            </p>
+          )}
 
-        <button
-          type="button"
-          onClick={() =>
-            setDemoSessionAndGo(
-              "customer",
-              "Kajan Sivanesan",
-              "/shop",
-              { address: "Puliyanthivu, Batticaloa", locality: "Town Hub" }
-            )
-          }
-          className="w-full p-3.5 rounded-2xl bg-white border border-gray-200/80 hover:border-[#E4002B] flex items-center justify-between text-left transition-all hover:shadow-md group"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
-              <User className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-[#1F2430] group-hover:text-[#E4002B] transition-colors">
-                Customer (Local Shopper)
+          <form onSubmit={submit} className="mt-7 space-y-5">
+            {!requiresTwoFactor ? (
+              <>
+                <div>
+                  <label htmlFor="admin-email" className="mb-2 block text-sm font-bold text-slate-800">
+                    Admin email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+                    <input
+                      id="admin-email"
+                      type="email"
+                      autoComplete="username"
+                      required
+                      maxLength={255}
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      className="min-h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-buyme-navy outline-none transition focus:border-buyme-primary focus:ring-4 focus:ring-rose-100"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="admin-password" className="mb-2 block text-sm font-bold text-slate-800">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <LockKeyhole className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+                    <input
+                      id="admin-password"
+                      type="password"
+                      autoComplete="current-password"
+                      required
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      className="min-h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-buyme-navy outline-none transition focus:border-buyme-primary focus:ring-4 focus:ring-rose-100"
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div>
+                <label htmlFor="admin-code" className="mb-2 block text-sm font-bold text-slate-800">
+                  Six-digit code
+                </label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+                  <input
+                    id="admin-code"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    pattern="[0-9]{6}"
+                    maxLength={6}
+                    required
+                    value={code}
+                    onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
+                    className="min-h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm tracking-[0.35em] text-buyme-navy outline-none transition focus:border-buyme-primary focus:ring-4 focus:ring-rose-100"
+                  />
+                </div>
               </div>
-              <div className="text-[11px] text-gray-500">Browse 42 fresh items • Doorstep delivery</div>
-            </div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-[#E4002B] group-hover:translate-x-0.5 transition-all" />
-        </button>
+            )}
+
+            {error && (
+              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-900" role="alert">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex min-h-12 w-full items-center justify-center rounded-xl bg-buyme-primary px-4 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(228,0,43,0.2)] transition hover:bg-buyme-primary-deep focus:outline-none focus:ring-4 focus:ring-rose-200 disabled:cursor-wait disabled:opacity-60"
+            >
+              {submitting ? "Verifying…" : requiresTwoFactor ? "Verify and continue" : "Sign in securely"}
+            </button>
+          </form>
+
+          {requiresTwoFactor && (
+            <button
+              type="button"
+              onClick={() => {
+                setRequiresTwoFactor(false);
+                setCode("");
+                setDemoCode("");
+                setError("");
+              }}
+              className="mt-5 inline-flex items-center gap-2 self-start text-sm font-semibold text-slate-600 hover:text-buyme-primary"
+            >
+              <ArrowLeft size={16} aria-hidden="true" />
+              Return to password sign-in
+            </button>
+          )}
+          {requiresTwoFactor && demoCode && (
+            <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-950" role="status">
+              Staging demo code: <span className="font-mono">{demoCode}</span>
+            </p>
+          )}
+        </section>
       </div>
-
-      <div className="relative flex py-1 items-center">
-        <div className="flex-grow border-t border-gray-200"></div>
-        <span className="flex-shrink mx-4 text-[10px] uppercase font-bold text-gray-400">Or Manual Sign In</span>
-        <div className="flex-grow border-t border-gray-200"></div>
-      </div>
-
-      {/* Manual Login Form */}
-      <form onSubmit={handleManualSubmit} className="space-y-3">
-        <div>
-          <label className="block text-xs font-semibold text-[#1F2430] mb-1">
-            Phone / Mobile
-          </label>
-          <input
-            type="text"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-white/90 border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#E4002B]/40 focus:border-[#E4002B]"
-            placeholder="e.g. +94 77 123 4567"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-[#1F2430] mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-white/90 border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#E4002B]/40 focus:border-[#E4002B]"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full py-2.5 bg-[#E4002B] hover:bg-[#B80022] text-white font-bold rounded-xl text-xs shadow-md shadow-red-500/20 transition-all"
-        >
-          Sign In with Password
-        </button>
-      </form>
-
-      <div className="pt-2 text-center text-[11px] text-[#6B7280]">
-        <Link href="/" className="hover:text-[#E4002B] font-semibold">
-          ← Return to Ecosystem Home
-        </Link>
-      </div>
-    </div>
+    </main>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-[#FFFDFD] aurora-bg flex flex-col justify-center items-center p-4 sm:p-6">
-      <Suspense fallback={<div className="text-xs text-gray-400">Loading sign in...</div>}>
-        <LoginForm />
-      </Suspense>
-    </div>
+    <Suspense fallback={<main className="min-h-screen bg-buyme-canvas" aria-label="Loading sign-in" />}>
+      <LoginForm />
+    </Suspense>
   );
 }

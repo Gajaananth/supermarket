@@ -5,6 +5,7 @@
 .npmrc
 **/local.properties
 **/key.properties
+**/google-services.json
 *.jks
 *.keystore
 *.p12

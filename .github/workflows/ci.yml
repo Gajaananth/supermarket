@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: API build and tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci-only-not-a-secret
+          POSTGRES_DB: buyme_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci -d buyme_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      npm_config_cache: ${{ runner.temp }}/npm-cache
+      NODE_ENV: test
+      DATABASE_URL: postgresql://ci:ci-only-not-a-secret@127.0.0.1:5432/buyme_test?schema=public
+      JWT_SECRET: ci-access-secret-at-least-32-characters
+      JWT_REFRESH_SECRET: ci-refresh-secret-at-least-32-characters
+      STORAGE_LOCAL_DIR: ${{ runner.temp }}/buyme-storage
+      OTP_DEV_MODE: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install and build shared API contract
+        working-directory: packages/api-contract
+        run: |
+          npm ci
+          npm run build
+      - name: Install API dependencies
+        working-directory: apps/api
+        run: npm ci
+      - name: Generate Prisma client
+        working-directory: apps/api
+        run: npm run prisma:generate
+      - name: Migrate ephemeral CI database
+        working-directory: apps/api
+        run: npx prisma migrate deploy
+      - name: Build and run API test suite
+        working-directory: apps/api
+        run: npm test
+
+  admin-web:
+    name: Admin web typecheck and build
+    runs-on: ubuntu-latest
+    env:
+      npm_config_cache: ${{ runner.temp }}/npm-cache
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        working-directory: apps/admin_web
+        run: npm ci
+      - name: Typecheck
+        working-directory: apps/admin_web
+        run: npm run typecheck
+      - name: Build
+        working-directory: apps/admin_web
+        run: npm run build
+
+  android:
+    name: Flutter analyze, tests, and APK
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - apps/customer_app
+          - apps/rider_app
+          - apps/admin_app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve packages
+        working-directory: ${{ matrix.app }}
+        run: flutter pub get
+      - name: Analyze
+        working-directory: ${{ matrix.app }}
+        run: flutter analyze
+      - name: Test
+        working-directory: ${{ matrix.app }}
+        run: flutter test
+      - name: Build release APK
+        working-directory: ${{ matrix.app }}
+        run: flutter build apk --release
+
+  dependency-audit:
+    name: npm dependency audit
+    runs-on: ubuntu-latest
+    env:
+      npm_config_cache: ${{ runner.temp }}/npm-cache
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - apps/api
+          - apps/admin_web
+          - packages/api-contract
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fail on high or critical npm advisories
+        working-directory: ${{ matrix.project }}
+        run: npm audit --package-lock-only --audit-level=high

@@ -1,0 +1,4592 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "summary": "System Health & DB Connectivity Ping",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Health check successful"
+          },
+          "503": {
+            "description": "Database connectivity check failed"
+          }
+        },
+        "tags": [
+          "System & Health"
+        ]
+      }
+    },
+    "/api/v1/auth/customer/otp-request": {
+      "post": {
+        "operationId": "AuthController_requestCustomerOtp",
+        "summary": "Request Customer OTP login code (Phone only)",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCustomerOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP dispatched via SMS provider"
+          },
+          "429": {
+            "description": "Rate limit exceeded (max 3 per 5 mins)"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/customer/otp-verify": {
+      "post": {
+        "operationId": "AuthController_verifyCustomerOtp",
+        "summary": "Verify Customer OTP & issue access + rotating refresh tokens",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyCustomerOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful"
+          },
+          "400": {
+            "description": "Invalid or expired OTP"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/rider/otp-request": {
+      "post": {
+        "operationId": "AuthController_requestRiderOtp",
+        "summary": "Request Rider OTP login code (Phone or Email)",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRiderOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rider OTP dispatched"
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/rider/otp-verify": {
+      "post": {
+        "operationId": "AuthController_verifyRiderOtp",
+        "summary": "Verify Rider OTP & authenticate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRiderOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rider authenticated"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/rider/registration/otp-request": {
+      "post": {
+        "operationId": "AuthController_requestRiderRegistrationOtp",
+        "summary": "Request an OTP to register a rider account",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRiderRegistrationOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registration OTP sent to the rider phone"
+          },
+          "429": {
+            "description": "Per-phone or per-IP OTP rate limit exceeded"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/rider/registration/otp-verify": {
+      "post": {
+        "operationId": "AuthController_verifyRiderRegistrationOtp",
+        "summary": "Verify registration OTP and create a pending rider account",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRiderRegistrationOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rider account created in REGISTERED state"
+          },
+          "400": {
+            "description": "Invalid OTP or phone/email already registered"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/admin/login": {
+      "post": {
+        "operationId": "AuthController_adminLogin",
+        "summary": "Admin login by Email + Argon2 Password (Optional 2FA for Super Admin)",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Admin authenticated or 2FA required"
+          },
+          "401": {
+            "description": "Invalid email or password"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/admin/verify-2fa": {
+      "post": {
+        "operationId": "AuthController_verifyAdmin2fa",
+        "summary": "Verify Super Admin 2FA OTP code",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminVerify2faDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Super Admin authenticated"
+          },
+          "400": {
+            "description": "Invalid 2FA code"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "summary": "Rotate refresh token (Replay attack detection & revocation)",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens rotated successfully"
+          },
+          "401": {
+            "description": "Token compromised or expired"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "summary": "Logout and revoke device refresh session",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/logout-all": {
+      "post": {
+        "operationId": "AuthController_logoutAll",
+        "summary": "Revoke all active sessions for the authenticated account",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/push-token": {
+      "post": {
+        "operationId": "AuthController_registerPushToken",
+        "summary": "Register an FCM token for an active signed-in device",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPushTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_getProfile",
+        "summary": "Get current authenticated user profile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current user profile"
+          }
+        },
+        "tags": [
+          "Authentication & Identity"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores": {
+      "get": {
+        "operationId": "StoresController_findAll",
+        "summary": "List all active Batticaloa stores with delivery zones",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Store list"
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ]
+      }
+    },
+    "/api/v1/stores/admin": {
+      "get": {
+        "operationId": "StoresController_findAllForAdmin",
+        "summary": "List all stores, including inactive stores, for Super Admin management",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores/{id}/status": {
+      "patch": {
+        "operationId": "StoresController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStoreStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores/{id}/settings": {
+      "get": {
+        "operationId": "StoresController_getSettings",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ]
+      },
+      "patch": {
+        "operationId": "StoresController_updateSettings",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStoreSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ]
+      }
+    },
+    "/api/v1/stores/{id}/zones/{zoneId}/pricing": {
+      "patch": {
+        "operationId": "StoresController_updateZonePricing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zoneId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeliveryZonePricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ]
+      }
+    },
+    "/api/v1/stores/{id}": {
+      "get": {
+        "operationId": "StoresController_findOne",
+        "summary": "Get single store details by UUID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store details"
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ]
+      }
+    },
+    "/api/v1/stores/find-nearest": {
+      "post": {
+        "operationId": "StoresController_findNearest",
+        "summary": "Find nearest open store for GPS coordinates",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindNearestStoreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Nearest store"
+          }
+        },
+        "tags": [
+          "Stores & Zones"
+        ]
+      }
+    },
+    "/api/v1/categories": {
+      "get": {
+        "operationId": "CategoriesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ]
+      },
+      "post": {
+        "operationId": "CategoriesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/categories/{id}": {
+      "get": {
+        "operationId": "CategoriesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ]
+      },
+      "patch": {
+        "operationId": "CategoriesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CategoriesController_deactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "operationId": "ProductsController_findAll",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maxLength": 100,
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Products"
+        ]
+      },
+      "post": {
+        "operationId": "ProductsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/products/barcode/{barcode}": {
+      "get": {
+        "operationId": "ProductsController_findByBarcode",
+        "parameters": [
+          {
+            "name": "barcode",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/api/v1/products/{id}": {
+      "get": {
+        "operationId": "ProductsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Products"
+        ]
+      },
+      "patch": {
+        "operationId": "ProductsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "ProductsController_deactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/products/{id}/image": {
+      "post": {
+        "operationId": "ProductsController_uploadImage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "image"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/warehouse/stock": {
+      "get": {
+        "operationId": "WarehouseInventoryController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Warehouse Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/warehouse/stock/low-stock": {
+      "get": {
+        "operationId": "WarehouseInventoryController_lowStock",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Warehouse Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/warehouse/stock/{productId}/adjust": {
+      "post": {
+        "operationId": "WarehouseInventoryController_adjust",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdjustStockDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Warehouse Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/warehouse/stock/{productId}/reorder-level": {
+      "patch": {
+        "operationId": "WarehouseInventoryController_setReorderLevel",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReorderLevelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Warehouse Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores/{storeId}/catalog": {
+      "get": {
+        "operationId": "StoreInventoryController_catalog",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maxLength": 100,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Store Catalogue & Stock"
+        ]
+      }
+    },
+    "/api/v1/stores/{storeId}/stock": {
+      "get": {
+        "operationId": "StoreInventoryController_stock",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Store Catalogue & Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores/{storeId}/catalog/{productId}": {
+      "post": {
+        "operationId": "StoreInventoryController_updateCatalog",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStoreCatalogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Store Catalogue & Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores/{storeId}/stock/{productId}/adjust": {
+      "post": {
+        "operationId": "StoreInventoryController_adjustStock",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdjustStockDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Store Catalogue & Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores/{storeId}/alerts": {
+      "get": {
+        "operationId": "StoreInventoryController_alerts",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Store Catalogue & Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stores/{storeId}/alerts/{alertId}/acknowledge": {
+      "patch": {
+        "operationId": "StoreInventoryController_acknowledge",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "alertId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Store Catalogue & Stock"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/transfers": {
+      "get": {
+        "operationId": "TransfersController_list",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "DRAFT",
+                "DISPATCHED",
+                "RECEIVED_FULL",
+                "RECEIVED_PARTIAL",
+                "RESOLVED",
+                "CANCELLED"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "TransfersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}": {
+      "get": {
+        "operationId": "TransfersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/dispatch": {
+      "post": {
+        "operationId": "TransfersController_dispatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/receive": {
+      "post": {
+        "operationId": "TransfersController_receive",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReceiveTransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/resolve": {
+      "post": {
+        "operationId": "TransfersController_resolve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveTransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/revert": {
+      "post": {
+        "operationId": "TransfersController_revert",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/cancel": {
+      "post": {
+        "operationId": "TransfersController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Stock Transfers"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "operationId": "OrdersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "OrdersController_list",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "PLACED",
+                "ACCEPTED",
+                "REJECTED",
+                "PREPARING",
+                "READY",
+                "RIDER_ASSIGNED",
+                "PICKED_UP",
+                "ON_THE_WAY",
+                "DELIVERED",
+                "CANCELLED",
+                "FAILED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/checkout": {
+      "post": {
+        "operationId": "OrdersController_checkout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/eligible-riders": {
+      "get": {
+        "operationId": "OrdersController_eligibleRiders",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}": {
+      "get": {
+        "operationId": "OrdersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/cancel": {
+      "post": {
+        "operationId": "OrdersController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/accept": {
+      "post": {
+        "operationId": "OrdersController_accept",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/reject": {
+      "post": {
+        "operationId": "OrdersController_reject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/preparing": {
+      "post": {
+        "operationId": "OrdersController_startPreparing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/ready": {
+      "post": {
+        "operationId": "OrdersController_markReady",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/assign-rider": {
+      "post": {
+        "operationId": "OrdersController_assignRider",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignOrderRiderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/rider-reject": {
+      "post": {
+        "operationId": "OrdersController_riderReject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/pick-up": {
+      "post": {
+        "operationId": "OrdersController_pickUp",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/start-delivery": {
+      "post": {
+        "operationId": "OrdersController_startDelivery",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/deliver": {
+      "post": {
+        "operationId": "OrdersController_deliver",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliverOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{id}/fail": {
+      "post": {
+        "operationId": "OrdersController_fail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Orders & COD"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cart/{storeId}": {
+      "get": {
+        "operationId": "CartController_get",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cart/{storeId}/items": {
+      "post": {
+        "operationId": "CartController_add",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartItemInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cart/{storeId}/items/{storeProductId}": {
+      "patch": {
+        "operationId": "CartController_setQuantity",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeProductId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartItemQuantityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CartController_remove",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeProductId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Cart"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/me": {
+      "get": {
+        "operationId": "CashControlController_getMyCash",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/deposits/upload-url": {
+      "post": {
+        "operationId": "CashControlController_createUploadUrl",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DepositUploadUrlDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/deposits": {
+      "post": {
+        "operationId": "CashControlController_submit",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRiderDepositDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "CashControlController_list",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "PENDING",
+                "APPROVED",
+                "VARIANCE",
+                "APPROVED_WITH_VARIANCE",
+                "REJECTED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "riderId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/deposits/verification-queue": {
+      "get": {
+        "operationId": "CashControlController_verificationQueue",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "PENDING",
+                "APPROVED",
+                "VARIANCE",
+                "APPROVED_WITH_VARIANCE",
+                "REJECTED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "riderId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/deposits/variance-cases": {
+      "get": {
+        "operationId": "CashControlController_varianceCases",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "OPEN",
+                "RESOLVED_APPROVED",
+                "RESOLVED_REJECTED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/stores/{storeId}/reconciliation": {
+      "get": {
+        "operationId": "CashControlController_storeReconciliation",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "required": true,
+            "in": "query",
+            "description": "Store business date in Asia/Colombo",
+            "schema": {
+              "example": "2026-11-17",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/deposits/{id}/slip-url": {
+      "get": {
+        "operationId": "CashControlController_createDownloadUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/deposits/{id}/verify": {
+      "post": {
+        "operationId": "CashControlController_verify",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRiderDepositDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cash-control/deposits/{id}/variance/resolve": {
+      "post": {
+        "operationId": "CashControlController_resolveVariance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveDepositVarianceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Cash Control"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns": {
+      "get": {
+        "operationId": "CampaignsController_list",
+        "parameters": [
+          {
+            "name": "storeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "CampaignsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/campaigns/{id}": {
+      "patch": {
+        "operationId": "CampaignsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/me/shift/start": {
+      "post": {
+        "operationId": "RiderOnboardingController_startShift",
+        "summary": "Start a shift for an approved rider with no cash restriction",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/me/shift/stop": {
+      "post": {
+        "operationId": "RiderOnboardingController_stopShift",
+        "summary": "Stop a shift when no active delivery is assigned",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/me/kyc": {
+      "get": {
+        "operationId": "RiderOnboardingController_getMyStatus",
+        "summary": "Get the authenticated rider KYC status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/me/kyc/upload-url": {
+      "post": {
+        "operationId": "RiderOnboardingController_createUploadUrl",
+        "summary": "Create a short-lived private URL for a KYC image upload",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KycUploadUrlDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Signed private upload URL and required headers"
+          },
+          "400": {
+            "description": "Unsupported type or image exceeds 5 MB"
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/me/kyc/submit": {
+      "post": {
+        "operationId": "RiderOnboardingController_submitKyc",
+        "summary": "Submit or resubmit bike details and scanned licence images",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRiderKycDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "KYC submitted for super-admin review"
+          },
+          "400": {
+            "description": "Invalid, missing, or malware-infected image"
+          },
+          "503": {
+            "description": "Private storage or malware scanner unavailable"
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/review-queue": {
+      "get": {
+        "operationId": "RiderOnboardingController_reviewQueue",
+        "summary": "List riders awaiting KYC review",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/review-queue/{riderId}": {
+      "get": {
+        "operationId": "RiderOnboardingController_reviewDetails",
+        "summary": "View rider KYC details without exposing private object keys",
+        "parameters": [
+          {
+            "name": "riderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/{riderId}/kyc/{documentType}/url": {
+      "get": {
+        "operationId": "RiderOnboardingController_documentUrl",
+        "summary": "Create a short-lived private URL to review one KYC image",
+        "parameters": [
+          {
+            "name": "riderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "documentType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/{riderId}/approve": {
+      "post": {
+        "operationId": "RiderOnboardingController_approve",
+        "summary": "Approve KYC, assign a store, and select rider type",
+        "parameters": [
+          {
+            "name": "riderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveRiderKycDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/{riderId}/reject": {
+      "post": {
+        "operationId": "RiderOnboardingController_reject",
+        "summary": "Reject submitted KYC with a reason for resubmission",
+        "parameters": [
+          {
+            "name": "riderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectRiderKycDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/riders/{riderId}/suspend": {
+      "post": {
+        "operationId": "RiderOnboardingController_suspend",
+        "summary": "Suspend an approved rider and revoke active sessions",
+        "parameters": [
+          {
+            "name": "riderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuspendRiderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Rider Registration & KYC"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/maps/geocode": {
+      "get": {
+        "operationId": "MapsController_geocode",
+        "summary": "Geocode an address using OpenStreetMap",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Address or place name to search",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Maps"
+        ]
+      }
+    },
+    "/api/v1/maps/reverse-geocode": {
+      "get": {
+        "operationId": "MapsController_reverseGeocode",
+        "summary": "Reverse-geocode coordinates using OpenStreetMap",
+        "parameters": [
+          {
+            "name": "latitude",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minimum": -90,
+              "maximum": 90,
+              "type": "number"
+            }
+          },
+          {
+            "name": "longitude",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minimum": -180,
+              "maximum": 180,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Maps"
+        ]
+      }
+    },
+    "/api/v1/maps/route": {
+      "get": {
+        "operationId": "MapsController_route",
+        "summary": "Find a driving route using OSRM",
+        "parameters": [
+          {
+            "name": "fromLatitude",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minimum": -90,
+              "maximum": 90,
+              "type": "number"
+            }
+          },
+          {
+            "name": "fromLongitude",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minimum": -180,
+              "maximum": 180,
+              "type": "number"
+            }
+          },
+          {
+            "name": "toLatitude",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minimum": -90,
+              "maximum": 90,
+              "type": "number"
+            }
+          },
+          {
+            "name": "toLongitude",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minimum": -180,
+              "maximum": 180,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Maps"
+        ]
+      }
+    },
+    "/api/v1/reports/overview": {
+      "get": {
+        "operationId": "ReportsController_overview",
+        "summary": "Get bounded, store-filterable daily sales and order aggregates",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-11-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-11-17T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reports"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/addresses": {
+      "get": {
+        "operationId": "AddressesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Addresses"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "AddressesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Addresses"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/addresses/{id}": {
+      "patch": {
+        "operationId": "AddressesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Addresses"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "AddressesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Addresses"
+        ],
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "BuyMe Hyperlocal Delivery Platform API",
+    "description": "OpenAPI contract generated from the NestJS application",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "JWT-auth": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RequestCustomerOtpDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "+94772220001",
+            "description": "Customer Sri Lankan mobile number in E.164 format"
+          }
+        },
+        "required": [
+          "phone"
+        ]
+      },
+      "VerifyCustomerOtpDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "+94772220001"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456",
+            "description": "6-digit numeric OTP"
+          },
+          "deviceId": {
+            "type": "string",
+            "example": "device-uuid-1234",
+            "default": "browser-client"
+          },
+          "deviceInfo": {
+            "type": "string",
+            "example": "Chrome / Android 14"
+          }
+        },
+        "required": [
+          "phone",
+          "code",
+          "deviceId"
+        ]
+      },
+      "RequestRiderOtpDto": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "example": "+94771110001",
+            "description": "Rider mobile number (+94...) or registered email address"
+          }
+        },
+        "required": [
+          "destination"
+        ]
+      },
+      "VerifyRiderOtpDto": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string",
+            "example": "+94771110001",
+            "description": "Registered Sri Lankan mobile number or email address"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456",
+            "description": "6-digit numeric OTP"
+          },
+          "deviceId": {
+            "type": "string",
+            "example": "device-uuid-rider-01"
+          },
+          "deviceInfo": {
+            "type": "string",
+            "example": "BuyMe Rider App v1.0 (Pixel 7)"
+          }
+        },
+        "required": [
+          "destination",
+          "code",
+          "deviceId"
+        ]
+      },
+      "RequestRiderRegistrationOtpDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "Nimal Perera"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+94771110001"
+          },
+          "email": {
+            "type": "string",
+            "example": "nimal@example.com"
+          }
+        },
+        "required": [
+          "fullName",
+          "phone"
+        ]
+      },
+      "VerifyRiderRegistrationOtpDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "Nimal Perera"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+94771110001"
+          },
+          "email": {
+            "type": "string",
+            "example": "nimal@example.com"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456",
+            "description": "6-digit numeric OTP"
+          },
+          "deviceId": {
+            "type": "string",
+            "example": "device-uuid-rider-01"
+          },
+          "deviceInfo": {
+            "type": "string",
+            "example": "BuyMe Rider App v1.0"
+          }
+        },
+        "required": [
+          "fullName",
+          "phone",
+          "code",
+          "deviceId"
+        ]
+      },
+      "AdminLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "admin@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Your admin password"
+          },
+          "deviceId": {
+            "type": "string",
+            "example": "admin-portal-client"
+          },
+          "deviceInfo": {
+            "type": "string",
+            "example": "Firefox / macOS"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "deviceId"
+        ]
+      },
+      "AdminVerify2faDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "admin@example.com"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456",
+            "description": "6-digit 2FA OTP code"
+          },
+          "deviceId": {
+            "type": "string",
+            "example": "admin-portal-client"
+          },
+          "deviceInfo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "code",
+          "deviceId"
+        ]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "description": "Rotating refresh token string"
+          },
+          "deviceId": {
+            "type": "string",
+            "example": "device-uuid-1234"
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "RegisterPushTokenDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "pushToken": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "deviceId",
+          "pushToken"
+        ]
+      },
+      "UpdateStoreStatusDto": {
+        "type": "object",
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isActive"
+        ]
+      },
+      "UpdateStoreSettingsDto": {
+        "type": "object",
+        "properties": {
+          "minOrderAmount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "freeDeliveryThreshold": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "cashHoldThreshold": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 99999999.99
+          },
+          "cashHoldMaxHours": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 168
+          },
+          "openingTime": {
+            "type": "string",
+            "example": "07:00"
+          },
+          "closingTime": {
+            "type": "string",
+            "example": "22:00"
+          },
+          "serviceRadiusKm": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 500
+          }
+        }
+      },
+      "UpdateDeliveryZonePricingDto": {
+        "type": "object",
+        "properties": {
+          "baseFee": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "minOrderForFreeDelivery": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "estimatedDeliveryMins": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FindNearestStoreDto": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "example": 7.711,
+            "description": "Latitude coordinate"
+          },
+          "longitude": {
+            "type": "number",
+            "example": 81.693,
+            "description": "Longitude coordinate"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
+      },
+      "CreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Fresh Produce"
+          },
+          "slug": {
+            "type": "string",
+            "example": "fresh-produce"
+          },
+          "nameTa": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "UpdateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Fresh Produce"
+          },
+          "slug": {
+            "type": "string",
+            "example": "fresh-produce"
+          },
+          "nameTa": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "example": "STP-RIC-001"
+          },
+          "barcodes": {
+            "example": [
+              "4792011001011",
+              "4891234567890"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string",
+            "example": "Samba Rice 5kg"
+          },
+          "nameTa": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "unit": {
+            "type": "string",
+            "example": "pack"
+          },
+          "costPrice": {
+            "type": "number",
+            "example": 1100
+          },
+          "baseSellingPrice": {
+            "type": "number",
+            "example": 1250
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "sku",
+          "barcodes",
+          "name",
+          "categoryId",
+          "unit",
+          "costPrice",
+          "baseSellingPrice"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "example": "STP-RIC-001"
+          },
+          "barcodes": {
+            "example": [
+              "4792011001011",
+              "4891234567890"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string",
+            "example": "Samba Rice 5kg"
+          },
+          "nameTa": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "unit": {
+            "type": "string",
+            "example": "pack"
+          },
+          "costPrice": {
+            "type": "number",
+            "example": 1100
+          },
+          "baseSellingPrice": {
+            "type": "number",
+            "example": 1250
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "AdjustStockDto": {
+        "type": "object",
+        "properties": {
+          "quantityDelta": {
+            "type": "number",
+            "example": 25,
+            "description": "Signed change to physical on-hand stock"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "quantityDelta",
+          "reason"
+        ]
+      },
+      "UpdateReorderLevelDto": {
+        "type": "object",
+        "properties": {
+          "reorderLevel": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "reorderLevel"
+        ]
+      },
+      "UpdateStoreCatalogDto": {
+        "type": "object",
+        "properties": {
+          "customPrice": {
+            "type": "object",
+            "example": 1299.5
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "reorderLevel": {
+            "type": "number",
+            "example": 10
+          }
+        }
+      },
+      "TransferLineDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestedQuantity": {
+            "type": "number",
+            "example": 20,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "productId",
+          "requestedQuantity"
+        ]
+      },
+      "CreateTransferDto": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Destination store"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransferLineDto"
+            }
+          }
+        },
+        "required": [
+          "storeId",
+          "items"
+        ]
+      },
+      "ReceiveTransferLineDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receivedQuantity": {
+            "type": "number",
+            "example": 18,
+            "minimum": 0
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "productId",
+          "receivedQuantity"
+        ]
+      },
+      "ReceiveTransferDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiveTransferLineDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "ResolveTransferLineDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "resolution": {
+            "type": "string",
+            "enum": [
+              "WRITE_OFF",
+              "RETURN_TO_WAREHOUSE"
+            ]
+          }
+        },
+        "required": [
+          "productId",
+          "resolution"
+        ]
+      },
+      "ResolveTransferDto": {
+        "type": "object",
+        "properties": {
+          "resolutionNote": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 1000
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResolveTransferLineDto"
+            }
+          }
+        },
+        "required": [
+          "resolutionNote",
+          "items"
+        ]
+      },
+      "CreateOrderItemDto": {
+        "type": "object",
+        "properties": {
+          "storeProductId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Store catalog row"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "storeProductId",
+          "quantity"
+        ]
+      },
+      "CreateOrderDto": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deliveryAddressId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deliveryZoneId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional confirmation of the auto-matched delivery zone"
+          },
+          "campaignCodes": {
+            "maxItems": 10,
+            "description": "Stackable campaign codes",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateOrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "storeId",
+          "deliveryAddressId",
+          "items"
+        ]
+      },
+      "CheckoutOrderDto": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deliveryAddressId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deliveryZoneId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "campaignCodes": {
+            "maxItems": 10,
+            "description": "Stackable campaign codes",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "storeId",
+          "deliveryAddressId"
+        ]
+      },
+      "OrderReasonDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "OrderNoteDto": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "AssignOrderRiderDto": {
+        "type": "object",
+        "properties": {
+          "riderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Rider profile ID"
+          }
+        },
+        "required": [
+          "riderId"
+        ]
+      },
+      "DeliverOrderDto": {
+        "type": "object",
+        "properties": {
+          "collectedAmount": {
+            "type": "number",
+            "example": 2500,
+            "minimum": 0.01
+          }
+        },
+        "required": [
+          "collectedAmount"
+        ]
+      },
+      "CartItemInputDto": {
+        "type": "object",
+        "properties": {
+          "storeProductId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "storeProductId",
+          "quantity"
+        ]
+      },
+      "CartItemQuantityDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      },
+      "DepositUploadUrlDto": {
+        "type": "object",
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "application/pdf"
+            ]
+          },
+          "contentLength": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5242880
+          }
+        },
+        "required": [
+          "contentType",
+          "contentLength"
+        ]
+      },
+      "CreateRiderDepositDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 99999999.99,
+            "example": 2500
+          },
+          "bankRefNumber": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 100
+          },
+          "objectKey": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "amount",
+          "bankRefNumber",
+          "objectKey"
+        ]
+      },
+      "VerifyRiderDepositDto": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "APPROVE",
+              "REJECT",
+              "VARIANCE"
+            ]
+          },
+          "rejectionReason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          },
+          "receivedAmount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "varianceReason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "ResolveDepositVarianceDto": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "ACCEPT_VARIANCE",
+              "REJECT_DEPOSIT"
+            ]
+          },
+          "resolutionNote": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "action",
+          "resolutionNote"
+        ]
+      },
+      "CreateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "storeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Omit to make campaign available to all stores"
+          },
+          "code": {
+            "type": "string",
+            "example": "SAVE10"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "FREE_DELIVERY",
+              "FIXED_DISCOUNT",
+              "PERCENTAGE_DISCOUNT"
+            ]
+          },
+          "value": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "minSubtotal": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "maxDiscount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "value",
+          "startsAt",
+          "endsAt"
+        ]
+      },
+      "UpdateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "value": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "minSubtotal": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "maxDiscount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 99999999.99
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "KycUploadUrlDto": {
+        "type": "object",
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          },
+          "contentLength": {
+            "type": "number",
+            "example": 250000,
+            "description": "File size in bytes; maximum 5 MB"
+          }
+        },
+        "required": [
+          "contentType",
+          "contentLength"
+        ]
+      },
+      "SubmitRiderKycDto": {
+        "type": "object",
+        "properties": {
+          "bikeNumber": {
+            "type": "string",
+            "example": "BATT-1234"
+          },
+          "drivingLicenceObjectKey": {
+            "type": "string",
+            "example": "rider-kyc/uuid/document-uuid.jpg"
+          },
+          "vehicleLicenceObjectKey": {
+            "type": "string",
+            "example": "rider-kyc/uuid/document-uuid.webp"
+          }
+        },
+        "required": [
+          "bikeNumber",
+          "drivingLicenceObjectKey",
+          "vehicleLicenceObjectKey"
+        ]
+      },
+      "ApproveRiderKycDto": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "riderType": {
+            "type": "string",
+            "enum": [
+              "EMPLOYEE",
+              "FREELANCE"
+            ]
+          }
+        },
+        "required": [
+          "storeId",
+          "riderType"
+        ]
+      },
+      "RejectRiderKycDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "The licence photo is not readable"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "SuspendRiderDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "Repeated delivery policy violations"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "CreateAddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 50,
+            "default": "Home"
+          },
+          "recipientName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "recipientPhone": {
+            "type": "string",
+            "example": "+94772220001"
+          },
+          "streetAddress": {
+            "type": "string"
+          },
+          "landmark": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "locality": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "isDefault": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "recipientName",
+          "recipientPhone",
+          "streetAddress",
+          "locality",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "UpdateAddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "recipientName": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "recipientPhone": {
+            "type": "string",
+            "example": "+94772220001"
+          },
+          "streetAddress": {
+            "type": "string"
+          },
+          "landmark": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "locality": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "isDefault": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
