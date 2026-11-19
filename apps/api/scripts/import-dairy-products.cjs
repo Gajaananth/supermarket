@@ -35,6 +35,8 @@ async function main() {
 
   const store = await prisma.store.findUnique({ where: { code: 'BM-S01' } });
   if (!store) throw new Error('BM-S01 store is missing.');
+  const warehouse = await prisma.warehouse.findUnique({ where: { code: 'WH-MAIN' } });
+  if (!warehouse) throw new Error('WH-MAIN warehouse is missing.');
 
   const rows = parseCsv(fs.readFileSync(csvPath, 'utf8'));
   let imported = 0;
@@ -100,6 +102,17 @@ async function main() {
         quantityOnHand: 40,
         quantityReserved: 0,
         isAvailable: true,
+      },
+    });
+    await prisma.masterInventory.upsert({
+      where: { warehouseId_masterProductId: { warehouseId: warehouse.id, masterProductId: product.id } },
+      update: { quantityOnHand: 100, quantityReserved: 0, reorderLevel: 10 },
+      create: {
+        warehouseId: warehouse.id,
+        masterProductId: product.id,
+        quantityOnHand: 100,
+        quantityReserved: 0,
+        reorderLevel: 10,
       },
     });
     imported += 1;

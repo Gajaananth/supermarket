@@ -49,6 +49,37 @@ async function main() {
     where: { storeId: store.id, isAvailable: true },
   });
 
+  await prisma.masterInventory.deleteMany({
+    where: {
+      masterProduct: {
+        OR: [
+          { sku: { startsWith: 'STP-' } },
+          { sku: { startsWith: 'DRY-' } },
+          { sku: { startsWith: 'BKY-' } },
+          { sku: { startsWith: 'BEV-' } },
+          { sku: { startsWith: 'PRD-' } },
+          { sku: { startsWith: 'SEA-' } },
+          { sku: { startsWith: 'HSD-' } },
+          { sku: { startsWith: 'BBY-' } },
+        ],
+      },
+    },
+  });
+  const deletedMockProducts = await prisma.masterProduct.deleteMany({
+    where: {
+      OR: [
+        { sku: { startsWith: 'STP-' } },
+        { sku: { startsWith: 'DRY-' } },
+        { sku: { startsWith: 'BKY-' } },
+        { sku: { startsWith: 'BEV-' } },
+        { sku: { startsWith: 'PRD-' } },
+        { sku: { startsWith: 'SEA-' } },
+        { sku: { startsWith: 'HSD-' } },
+        { sku: { startsWith: 'BBY-' } },
+      ],
+    },
+  });
+
   console.log(JSON.stringify({
     mockProductsFound: mockProducts.length,
     removedStoreLinks,
