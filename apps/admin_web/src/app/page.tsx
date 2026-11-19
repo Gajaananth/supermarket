@@ -275,11 +275,6 @@ export default async function CustomerHomePage() {
       <footer className="relative z-10 border-t border-slate-200 bg-white px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-500">BuyMe · Batticaloa District</p>
-          <nav aria-label="Staff sign-in" className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-            <Link href="/rider/login" className="text-slate-600 hover:text-buyme-primary">Rider sign in</Link>
-            <Link href="/store-admin/login" className="text-slate-600 hover:text-buyme-primary">Store Admin</Link>
-            <Link href="/admin/login" className="text-slate-600 hover:text-buyme-primary">Super Admin</Link>
-          </nav>
         </div>
       </footer>
     </main>
