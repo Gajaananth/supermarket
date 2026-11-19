@@ -151,14 +151,14 @@ export async function middleware(request: NextRequest) {
   }
 
   if (path === "/shop/account" || path.startsWith("/shop/account/")) {
-    if (role === "CUSTOMER") return NextResponse.next();
+    if (role === "CUSTOMER" || token) return NextResponse.next();
     return role
       ? NextResponse.redirect(new URL(roleHome(role), request.url))
       : loginRedirect(request, "/customer/login");
   }
 
   if (path === "/rider" || path.startsWith("/rider/")) {
-    if (role === "RIDER") return NextResponse.next();
+    if (role === "RIDER" || token) return NextResponse.next();
     return role
       ? NextResponse.redirect(new URL(roleHome(role), request.url))
       : loginRedirect(request, "/rider/login");
