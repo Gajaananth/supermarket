@@ -96,7 +96,23 @@ export function isAuthTokens(value: unknown): value is AuthTokens {
 }
 
 export function sameOriginRequest(request: Request): boolean {
-  return request.headers.get('origin') === new URL(request.url).origin;
+  const origin = request.headers.get('origin');
+  if (!origin) return false;
+
+  try {
+    const requestUrl = new URL(request.url);
+    const host = request.headers.get('x-forwarded-host')?.split(',')[0].trim()
+      || request.headers.get('host');
+    const protocol = request.headers.get('x-forwarded-proto')?.split(',')[0].trim()
+      || requestUrl.protocol.slice(0, -1);
+    if (!host) return origin === requestUrl.origin;
+
+    const parsedOrigin = new URL(origin);
+    const expectedOrigin = new URL(`${protocol}://${host}`).origin;
+    return origin === parsedOrigin.origin && parsedOrigin.origin === expectedOrigin;
+  } catch {
+    return false;
+  }
 }
 
 export function apiErrorMessage(value: unknown): string {

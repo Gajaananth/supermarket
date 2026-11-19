@@ -13,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { OrderStatus, Role } from '@prisma/client';
-import { Server, Socket } from 'socket.io';
+import { Namespace, Socket } from 'socket.io';
 import { PrismaService } from '../prisma/prisma.service';
 import { parseCorsAllowedOrigins } from '../../config/env.validation';
 
@@ -52,7 +52,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
   private readonly allowedOrigins: string[];
 
   @WebSocketServer()
-  private server?: Server;
+  private server?: Namespace;
 
   constructor(
     private readonly jwt: JwtService,
@@ -67,8 +67,8 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
     );
   }
 
-  afterInit(server: Server) {
-    server.engine.opts.cors = {
+  afterInit(server: Namespace) {
+    server.server.engine.opts.cors = {
       origin: this.allowedOrigins,
       credentials: true,
     };

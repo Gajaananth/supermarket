@@ -5,9 +5,11 @@ import { ArrowLeft, LockKeyhole } from "lucide-react";
 export default function FutureGateNotice({
   portal,
   description,
+  loginHref,
 }: {
   portal: string;
   description: string;
+  loginHref: string;
 }) {
   return (
     <main className="aurora-bg flex min-h-screen items-center justify-center px-4 py-10">
@@ -18,7 +20,7 @@ export default function FutureGateNotice({
         <p className="mt-5 text-xs font-extrabold uppercase tracking-[0.16em] text-buyme-primary">Implementation gate pending</p>
         <h1 className="mt-2 font-heading text-2xl font-extrabold text-buyme-navy">{portal}</h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-600">{description}</p>
-        <Link href="/login" className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl bg-buyme-primary px-4 text-sm font-bold text-white hover:bg-buyme-primary-deep">
+        <Link href={loginHref} className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl bg-buyme-primary px-4 text-sm font-bold text-white hover:bg-buyme-primary-deep">
           <ArrowLeft size={16} aria-hidden="true" /> Return to sign-in
         </Link>
       </section>

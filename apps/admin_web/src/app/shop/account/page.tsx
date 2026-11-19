@@ -4,7 +4,8 @@ export default function CustomerAccountPage() {
   return (
     <FutureGateNotice
       portal="Customer account"
-      description="Customer profile and secure OTP sessions will be connected as part of the Customer gate."
+      description="Your secure customer sign-in is ready. Profile, saved addresses, and order history will be available in a later implementation gate."
+      loginHref="/customer/login"
     />
   );
 }
