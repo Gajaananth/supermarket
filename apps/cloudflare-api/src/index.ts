@@ -482,6 +482,62 @@ async function route(request: Request, env: Env): Promise<Response> {
     return success({ count: stores.rowCount, stores: stores.rows });
   }
 
+  if (path === "/api/v1/addresses" && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user || user.role !== "CUSTOMER") return failure("Unauthorized", 401);
+    const customer = await pool.query(
+      `SELECT cp."id" FROM "CustomerProfile" cp WHERE cp."userId" = $1`,
+      [user.id],
+    );
+    if (!customer.rowCount) return success([]);
+    const addresses = await pool.query(
+      `SELECT "id", "label", "recipientName", "recipientPhone", "streetAddress",
+              "landmark", "locality", "latitude"::text, "longitude"::text, "isDefault"
+       FROM "Address" WHERE "customerId" = $1 ORDER BY "isDefault" DESC, "createdAt" ASC`,
+      [customer.rows[0].id],
+    );
+    return success(addresses.rows);
+  }
+
+  const cartMatch = path.match(/^\/api\/v1\/cart\/([0-9a-f-]{36})$/i);
+  if (cartMatch && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user || user.role !== "CUSTOMER") return failure("Unauthorized", 401);
+    const customer = await pool.query(
+      `SELECT cp."id" FROM "CustomerProfile" cp WHERE cp."userId" = $1`,
+      [user.id],
+    );
+    if (!customer.rowCount) return success({ storeId: cartMatch[1], items: [] });
+    const cart = await pool.query(
+      `SELECT c."id" FROM "Cart" c
+       WHERE c."customerId" = $1 AND c."storeId" = $2`,
+      [customer.rows[0].id, cartMatch[1]],
+    );
+    if (!cart.rowCount) return success({ storeId: cartMatch[1], items: [] });
+    const items = await pool.query(
+      `SELECT ci."id", ci."storeProductId", ci."quantity",
+              json_build_object(
+                'id', sp."id",
+                'masterProductId', sp."masterProductId",
+                'quantityOnHand', sp."quantityOnHand",
+                'quantityReserved', sp."quantityReserved",
+                'isAvailable', sp."isAvailable",
+                'customPrice', sp."customPrice"::text,
+                'name', mp."name",
+                'unit', mp."unit",
+                'baseSellingPrice', mp."baseSellingPrice"::text,
+                'imageUrl', mp."imageUrl"
+              ) AS "storeProduct"
+       FROM "CartItem" ci
+       JOIN "StoreProduct" sp ON sp."id" = ci."storeProductId"
+       JOIN "MasterProduct" mp ON mp."id" = sp."masterProductId"
+       WHERE ci."cartId" = $1
+       ORDER BY mp."name"`,
+      [cart.rows[0].id],
+    );
+    return success({ id: cart.rows[0].id, storeId: cartMatch[1], items: items.rows });
+  }
+
   if (path === "/api/v1/reports/overview" && request.method === "GET") {
     return success({
       from: url.searchParams.get("from") ?? new Date().toISOString().slice(0, 10),
@@ -539,7 +595,42 @@ async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (path === "/api/v1/orders" && request.method === "GET") {
-    return success({ count: 0, orders: [] });
+    const user = await currentUser(pool, env, request);
+    if (!user) return failure("Unauthorized", 401);
+    let query = `SELECT o."id", o."orderNumber", o."status"::text,
+                         o."subtotal"::text, o."deliveryFee"::text,
+                         o."discount"::text, o."totalAmount"::text,
+                         o."createdAt",
+                         COALESCE(json_agg(json_build_object(
+                           'id', oi."id", 'storeProductId', oi."storeProductId",
+                           'productName', oi."productName", 'productUnit', oi."productUnit",
+                           'unitPrice', oi."unitPrice"::text, 'quantity', oi."quantity",
+                           'totalPrice', oi."totalPrice"::text
+                         )) FILTER (WHERE oi."id" IS NOT NULL), '[]') AS "items"
+                  FROM "Order" o
+                  LEFT JOIN "OrderItem" oi ON oi."orderId" = o."id"`;
+    if (user.role === "CUSTOMER") {
+      const customer = await pool.query(`SELECT cp."id" FROM "CustomerProfile" cp WHERE cp."userId" = $1`, [user.id]);
+      if (!customer.rowCount) return success([]);
+      query += ` WHERE o."customerId" = $1`;
+      const result = await pool.query(`${query} GROUP BY o."id" ORDER BY o."createdAt" DESC`, [customer.rows[0].id]);
+      return success(result.rows);
+    }
+    if (user.role === "RIDER") {
+      const rider = await pool.query(`SELECT rp."id" FROM "RiderProfile" rp WHERE rp."userId" = $1`, [user.id]);
+      if (!rider.rowCount) return success([]);
+      query += ` WHERE o."riderId" = $1`;
+      const result = await pool.query(`${query} GROUP BY o."id" ORDER BY o."createdAt" DESC`, [rider.rows[0].id]);
+      return success(result.rows);
+    }
+    if (user.role === "STORE_ADMIN") {
+      if (!user.storeId) return success([]);
+      query += ` WHERE o."storeId" = $1`;
+      const result = await pool.query(`${query} GROUP BY o."id" ORDER BY o."createdAt" DESC`, [user.storeId]);
+      return success(result.rows);
+    }
+    const result = await pool.query(`${query} GROUP BY o."id" ORDER BY o."createdAt" DESC`);
+    return success(result.rows);
   }
 
   if (path === "/api/v1/orders/eligible-riders" && request.method === "GET") {
@@ -556,7 +647,7 @@ async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (path === "/api/v1/cash-control/deposits/verification-queue" && request.method === "GET") {
-    return success({ count: 0, items: [] });
+    return success([]);
   }
 
   const riderDetailMatch = path.match(/^\/api\/v1\/riders\/review-queue\/([0-9a-f-]{36})$/i);
@@ -666,6 +757,34 @@ async function route(request: Request, env: Env): Promise<Response> {
     }
     if (!isRecord(body)) return failure("Request body must be a JSON object.", 400);
 
+    const cartItemMatch = path.match(/^\/api\/v1\/cart\/([0-9a-f-]{36})\/items$/i);
+    if (cartItemMatch && typeof body.storeProductId === "string" &&
+        typeof body.quantity === "number" && Number.isInteger(body.quantity) && body.quantity >= 1) {
+      const user = await currentUser(pool, env, request);
+      if (!user || user.role !== "CUSTOMER") return failure("Unauthorized", 401);
+      const customer = await pool.query(
+        `SELECT cp."id" FROM "CustomerProfile" cp WHERE cp."userId" = $1`,
+        [user.id],
+      );
+      if (!customer.rowCount) return failure("Customer profile not found", 404);
+      const cart = await pool.query(
+        `INSERT INTO "Cart" ("id", "customerId", "storeId")
+         VALUES (gen_random_uuid(), $1, $2)
+         ON CONFLICT ("customerId", "storeId") DO UPDATE SET "updatedAt" = NOW()
+         RETURNING "id"`,
+        [customer.rows[0].id, cartItemMatch[1]],
+      );
+      await pool.query(
+        `INSERT INTO "CartItem" ("id", "cartId", "storeProductId", "quantity")
+         VALUES (gen_random_uuid(), $1, $2, $3)
+         ON CONFLICT ("cartId", "storeProductId") DO UPDATE SET
+           "quantity" = "CartItem"."quantity" + EXCLUDED."quantity",
+           "updatedAt" = NOW()`,
+        [cart.rows[0].id, body.storeProductId, body.quantity],
+      );
+      return success({ updated: true });
+    }
+
     if (path === "/api/v1/auth/customer/otp-request" &&
         typeof body.phone === "string") {
       const phone = body.phone.startsWith("0") && /^0\d{9}$/.test(body.phone)
@@ -718,6 +837,89 @@ async function route(request: Request, env: Env): Promise<Response> {
         [user.id],
       );
       return success({ revokedSessions: revoked.rowCount });
+    }
+
+    const checkoutMatch = path.match(/^\/api\/v1\/orders\/checkout$/i);
+    if (checkoutMatch) {
+      const user = await currentUser(pool, env, request);
+      if (!user || user.role !== "CUSTOMER") return failure("Unauthorized", 401);
+      if (typeof body.storeId !== "string") return failure("storeId is required", 400);
+      const customer = await pool.query(
+        `SELECT cp."id" FROM "CustomerProfile" cp WHERE cp."userId" = $1`,
+        [user.id],
+      );
+      if (!customer.rowCount) return failure("Customer profile not found", 404);
+      const customerId = customer.rows[0].id;
+      const cart = await pool.query(
+        `SELECT c."id" FROM "Cart" c
+         WHERE c."customerId" = $1 AND c."storeId" = $2`,
+        [customerId, body.storeId],
+      );
+      if (!cart.rowCount) return failure("The store cart is empty", 400);
+      const cartItems = await pool.query(
+        `SELECT ci."id", ci."storeProductId", ci."quantity",
+                sp."customPrice", mp."baseSellingPrice", mp."name", mp."unit"
+         FROM "CartItem" ci
+         JOIN "StoreProduct" sp ON sp."id" = ci."storeProductId"
+         JOIN "MasterProduct" mp ON mp."id" = sp."masterProductId"
+         WHERE ci."cartId" = $1`,
+        [cart.rows[0].id],
+      );
+      if (!cartItems.rowCount) return failure("The store cart is empty", 400);
+      const address = await pool.query(
+        `SELECT "id", "recipientName", "recipientPhone", "streetAddress", "landmark",
+                "locality", "latitude"::text, "longitude"::text
+         FROM "Address" WHERE "customerId" = $1
+         ORDER BY "isDefault" DESC LIMIT 1`,
+        [customerId],
+      );
+      if (!address.rowCount) return failure("A delivery address is required", 400);
+      const subtotal = cartItems.rows.reduce((sum: number, item: Record<string, unknown>) => {
+        const price = item.customPrice != null ? Number(item.customPrice) : Number(item.baseSellingPrice);
+        return sum + price * Number(item.quantity);
+      }, 0);
+      const deliveryFee = 150;
+      const total = subtotal + deliveryFee;
+      const orderNumber = `ORD-${new Date().getFullYear()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString().slice(-7).padStart(7, "0")}`;
+      const order = await pool.query(
+        `INSERT INTO "Order"
+           ("id", "orderNumber", "customerId", "storeId", "deliveryAddressId",
+            "deliveryAddressSnapshot", "status", "paymentMethod", "paymentStatus",
+            "subtotal", "deliveryFee", "discount", "totalAmount")
+         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5::json,
+                 'PLACED', 'COD', 'PENDING', $6, $7, 0, $8)
+         RETURNING "id", "orderNumber", "status", "subtotal"::text,
+                   "deliveryFee"::text, "discount"::text, "totalAmount"::text, "createdAt"`,
+        [
+          orderNumber,
+          customerId,
+          body.storeId,
+          address.rows[0].id,
+          JSON.stringify(address.rows[0]),
+          subtotal,
+          deliveryFee,
+          total,
+        ],
+      );
+      for (const item of cartItems.rows) {
+        const price = item.customPrice != null ? Number(item.customPrice) : Number(item.baseSellingPrice);
+        await pool.query(
+          `INSERT INTO "OrderItem"
+             ("id", "orderId", "storeProductId", "productName", "productUnit", "unitPrice", "quantity", "totalPrice")
+           VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7)`,
+          [
+            order.rows[0].id,
+            item.storeProductId,
+            item.name,
+            item.unit,
+            price,
+            item.quantity,
+            price * Number(item.quantity),
+          ],
+        );
+      }
+      await pool.query(`DELETE FROM "CartItem" WHERE "cartId" = $1`, [cart.rows[0].id]);
+      return success(order.rows[0]);
     }
 
     if (/^\/api\/v1\/orders\/[0-9a-f-]{36}\/(accept|reject|preparing|ready|assign-rider)$/.test(path) ||
@@ -791,6 +993,32 @@ async function route(request: Request, env: Env): Promise<Response> {
     }
     if (/^\/api\/v1\/stores\/[0-9a-f-]{36}\/alerts\/[0-9a-f-]{36}\/acknowledge$/.test(path)) {
       return success({ acknowledged: true });
+    }
+    if (!isRecord(body)) return failure("Request body must be a JSON object.", 400);
+    const cartQuantityMatch = path.match(/^\/api\/v1\/cart\/([0-9a-f-]{36})\/items\/([0-9a-f-]{36})$/i);
+    if (cartQuantityMatch && typeof body.quantity === "number" && Number.isInteger(body.quantity) && body.quantity >= 1) {
+      await pool.query(
+        `UPDATE "CartItem" ci SET "quantity" = $3, "updatedAt" = NOW()
+         FROM "Cart" c
+         WHERE ci."cartId" = c."id" AND c."storeId" = $1
+           AND ci."storeProductId" = $2`,
+        [cartQuantityMatch[1], cartQuantityMatch[2], body.quantity],
+      );
+      return success({ updated: true });
+    }
+  }
+
+  if (request.method === "DELETE") {
+    const cartRemoveMatch = path.match(/^\/api\/v1\/cart\/([0-9a-f-]{36})\/items\/([0-9a-f-]{36})$/i);
+    if (cartRemoveMatch) {
+      await pool.query(
+        `DELETE FROM "CartItem" ci
+         USING "Cart" c
+         WHERE ci."cartId" = c."id" AND c."storeId" = $1
+           AND ci."storeProductId" = $2`,
+        [cartRemoveMatch[1], cartRemoveMatch[2]],
+      );
+      return success({ removed: true });
     }
   }
 
