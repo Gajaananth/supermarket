@@ -16,11 +16,19 @@ import {
 interface SessionProfile {
   user: {
     id: string;
-    role: 'SUPER_ADMIN' | 'STORE_ADMIN';
+    role: 'SUPER_ADMIN' | 'STORE_ADMIN' | 'CUSTOMER' | 'RIDER';
     fullName: string;
     email: string | null;
     phone: string | null;
     store: { id: string; code: string; name: string } | null;
+    riderProfile: {
+      id: string;
+      kycStatus: string;
+      riderType: string;
+      assignedStoreId: string | null;
+      bikeNumber: string | null;
+      rejectionReason: string | null;
+    } | null;
   };
 }
 
@@ -29,37 +37,45 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function toSessionProfile(value: unknown): SessionProfile | null {
-  if (!isRecord(value) || !isRecord(value.user)) return null;
-  const user = value.user;
+  const user = isRecord(value) && isRecord(value.user) ? value.user : value;
+  if (!isRecord(user)) return null;
   if (
     typeof user.id !== 'string' ||
     typeof user.fullName !== 'string' ||
-    (user.role !== 'SUPER_ADMIN' && user.role !== 'STORE_ADMIN')
+    !['SUPER_ADMIN', 'STORE_ADMIN', 'CUSTOMER', 'RIDER'].includes(String(user.role))
   ) {
     return null;
   }
 
   let store: SessionProfile['user']['store'] = null;
-  if (user.role === 'STORE_ADMIN') {
-    if (
-      !isRecord(user.store) ||
-      typeof user.store.id !== 'string' ||
-      typeof user.store.code !== 'string' ||
-      typeof user.store.name !== 'string'
-    ) {
-      return null;
-    }
+  if (isRecord(user.store) &&
+      typeof user.store.id === 'string' &&
+      typeof user.store.code === 'string' &&
+      typeof user.store.name === 'string') {
     store = { id: user.store.id, code: user.store.code, name: user.store.name };
+  }
+
+  let riderProfile: SessionProfile['user']['riderProfile'] = null;
+  if (isRecord(user.riderProfile) && typeof user.riderProfile.id === 'string') {
+    riderProfile = {
+      id: user.riderProfile.id,
+      kycStatus: typeof user.riderProfile.kycStatus === 'string' ? user.riderProfile.kycStatus : 'REGISTERED',
+      riderType: typeof user.riderProfile.riderType === 'string' ? user.riderProfile.riderType : 'EMPLOYEE',
+      assignedStoreId: typeof user.riderProfile.assignedStoreId === 'string' ? user.riderProfile.assignedStoreId : null,
+      bikeNumber: typeof user.riderProfile.bikeNumber === 'string' ? user.riderProfile.bikeNumber : null,
+      rejectionReason: typeof user.riderProfile.rejectionReason === 'string' ? user.riderProfile.rejectionReason : null,
+    };
   }
 
   return {
     user: {
       id: user.id,
-      role: user.role,
+      role: user.role as SessionProfile['user']['role'],
       fullName: user.fullName,
       email: typeof user.email === 'string' ? user.email : null,
       phone: typeof user.phone === 'string' ? user.phone : null,
       store,
+      riderProfile,
     },
   };
 }
@@ -133,7 +149,7 @@ export async function GET() {
 
   const profile = toSessionProfile(await apiJson<unknown>(profileResponse));
   if (!profile) {
-    const result = NextResponse.json({ message: 'The account is not assigned to an admin portal.' }, { status: 403 });
+    const result = NextResponse.json({ message: 'The account does not have a valid portal profile.' }, { status: 403 });
     clearAuthCookies(result);
     return result;
   }
