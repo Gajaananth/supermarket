@@ -25,7 +25,17 @@ function isContact(value: unknown, portal: OtpPortal): value is string {
 function contactFromInput(value: unknown, portal: OtpPortal): string | null {
   if (!isRecord(value)) return null;
   const contact = portal === "customer" ? value.phone : value.destination;
-  return isContact(contact, portal) ? contact.trim() : null;
+  if (typeof contact !== "string") return null;
+  const trimmed = contact.trim();
+  if (portal === "customer") {
+    const normalized = trimmed.startsWith("0") && /^0\d{9}$/.test(trimmed)
+      ? `+94${trimmed.slice(1)}`
+      : trimmed.startsWith("94") && /^94\d{9}$/.test(trimmed)
+        ? `+${trimmed}`
+        : trimmed;
+    return isContact(normalized, portal) ? normalized : null;
+  }
+  return isContact(trimmed, portal) ? trimmed : null;
 }
 
 async function revokeSession(refreshToken: string): Promise<boolean> {
