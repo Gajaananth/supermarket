@@ -41,3 +41,6 @@ step4b_results.json
 *.iml
 .DS_Store
 Thumbs.db
+.vercel
+.env*
+!.env.example

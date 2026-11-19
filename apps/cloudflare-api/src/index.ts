@@ -406,6 +406,11 @@ async function currentUser(pool: Pool, env: Env, request: Request): Promise<User
   return user?.isActive ? user : null;
 }
 
+function canManageStore(user: UserRow, storeId: string): boolean {
+  return user.role === "SUPER_ADMIN" ||
+    (user.role === "STORE_ADMIN" && user.storeId === storeId);
+}
+
 async function refreshSession(pool: Pool, env: Env, body: Record<string, unknown>, request: Request): Promise<Response> {
   if (typeof body.refreshToken !== "string" || body.refreshToken.length > 256) {
     return failure("Session expired or invalid. Please login again.", 401);
@@ -463,6 +468,10 @@ async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (path === "/api/v1/stores/admin" && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user) return failure("Unauthorized", 401);
+    if (!["SUPER_ADMIN", "STORE_ADMIN"].includes(user.role)) return failure("Forbidden", 403);
+    if (user.role === "STORE_ADMIN" && !user.storeId) return success({ count: 0, stores: [] });
     const stores = await pool.query(
       `SELECT s."id", s."code", s."name", s."slug", s."address", s."locality",
               s."contactPhone", s."isActive", s."openingTime", s."closingTime",
@@ -477,7 +486,9 @@ async function route(request: Request, env: Env): Promise<Response> {
               )) FILTER (WHERE dz."id" IS NOT NULL), '[]') AS "deliveryZones"
        FROM "Store" s
        LEFT JOIN "DeliveryZone" dz ON dz."storeId" = s."id"
+       WHERE ($1::uuid IS NULL OR s."id" = $1)
        GROUP BY s."id" ORDER BY s."code"`,
+      [user.role === "STORE_ADMIN" ? user.storeId : null],
     );
     return success({ count: stores.rowCount, stores: stores.rows });
   }
@@ -549,6 +560,9 @@ async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (path === "/api/v1/warehouse/stock" && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user) return failure("Unauthorized", 401);
+    if (user.role !== "SUPER_ADMIN") return failure("Forbidden", 403);
     const stock = await pool.query(
       `SELECT mi."id", mi."quantityOnHand", mi."quantityReserved", mi."reorderLevel",
               json_build_object(
@@ -568,6 +582,9 @@ async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (path === "/api/v1/riders/review-queue" && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user) return failure("Unauthorized", 401);
+    if (user.role !== "SUPER_ADMIN") return failure("Forbidden", 403);
     const queue = await pool.query(
       `SELECT rp."id", rp."bikeNumber", rp."kycStatus"::text AS "kycStatus",
               rp."createdAt", rp."updatedAt",
@@ -652,6 +669,9 @@ async function route(request: Request, env: Env): Promise<Response> {
 
   const riderDetailMatch = path.match(/^\/api\/v1\/riders\/review-queue\/([0-9a-f-]{36})$/i);
   if (riderDetailMatch && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user) return failure("Unauthorized", 401);
+    if (user.role !== "SUPER_ADMIN") return failure("Forbidden", 403);
     const result = await pool.query(
       `SELECT rp."id", rp."bikeNumber", rp."kycStatus"::text AS "kycStatus",
               rp."riderType"::text AS "riderType", rp."assignedStoreId",
@@ -699,6 +719,9 @@ async function route(request: Request, env: Env): Promise<Response> {
 
   const storeSettingsMatch = path.match(/^\/api\/v1\/stores\/([0-9a-f-]{36})\/settings$/i);
   if (storeSettingsMatch && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user) return failure("Unauthorized", 401);
+    if (!canManageStore(user, storeSettingsMatch[1])) return failure("Forbidden", 403);
     const result = await pool.query(
       `SELECT s."id", s."code", s."name", s."slug", s."address", s."locality",
               s."contactPhone", s."isActive", s."openingTime", s."closingTime",
@@ -723,6 +746,9 @@ async function route(request: Request, env: Env): Promise<Response> {
 
   const storeStockMatch = path.match(/^\/api\/v1\/stores\/([0-9a-f-]{36})\/stock$/i);
   if (storeStockMatch && request.method === "GET") {
+    const user = await currentUser(pool, env, request);
+    if (!user) return failure("Unauthorized", 401);
+    if (!canManageStore(user, storeStockMatch[1])) return failure("Forbidden", 403);
     const stock = await pool.query(
       `SELECT sp."id", sp."quantityOnHand", sp."quantityReserved", sp."reorderLevel",
               sp."isAvailable", sp."customPrice"::text,
@@ -768,15 +794,15 @@ async function route(request: Request, env: Env): Promise<Response> {
       );
       if (!customer.rowCount) return failure("Customer profile not found", 404);
       const cart = await pool.query(
-        `INSERT INTO "Cart" ("id", "customerId", "storeId")
-         VALUES (gen_random_uuid(), $1, $2)
+        `INSERT INTO "Cart" ("id", "customerId", "storeId", "createdAt", "updatedAt")
+         VALUES (gen_random_uuid(), $1, $2, NOW(), NOW())
          ON CONFLICT ("customerId", "storeId") DO UPDATE SET "updatedAt" = NOW()
          RETURNING "id"`,
         [customer.rows[0].id, cartItemMatch[1]],
       );
       await pool.query(
-        `INSERT INTO "CartItem" ("id", "cartId", "storeProductId", "quantity")
-         VALUES (gen_random_uuid(), $1, $2, $3)
+        `INSERT INTO "CartItem" ("id", "cartId", "storeProductId", "quantity", "createdAt", "updatedAt")
+         VALUES (gen_random_uuid(), $1, $2, $3, NOW(), NOW())
          ON CONFLICT ("cartId", "storeProductId") DO UPDATE SET
            "quantity" = "CartItem"."quantity" + EXCLUDED."quantity",
            "updatedAt" = NOW()`,
@@ -957,6 +983,9 @@ async function route(request: Request, env: Env): Promise<Response> {
     }
     const storeSettingsMatch = path.match(/^\/api\/v1\/stores\/([0-9a-f-]{36})\/settings$/i);
     if (storeSettingsMatch) {
+      const user = await currentUser(pool, env, request);
+      if (!user) return failure("Unauthorized", 401);
+      if (!canManageStore(user, storeSettingsMatch[1])) return failure("Forbidden", 403);
       if (!isRecord(body)) return failure("Request body must be a JSON object.", 400);
       await pool.query(
         `UPDATE "Store" SET
@@ -984,6 +1013,9 @@ async function route(request: Request, env: Env): Promise<Response> {
     }
     const storeStatusMatch = path.match(/^\/api\/v1\/stores\/([0-9a-f-]{36})\/status$/i);
     if (storeStatusMatch) {
+      const user = await currentUser(pool, env, request);
+      if (!user) return failure("Unauthorized", 401);
+      if (user.role !== "SUPER_ADMIN") return failure("Forbidden", 403);
       if (!isRecord(body)) return failure("Request body must be a JSON object.", 400);
       await pool.query(
         `UPDATE "Store" SET "isActive" = COALESCE($2, "isActive"), "updatedAt" = NOW() WHERE "id" = $1`,
@@ -997,13 +1029,21 @@ async function route(request: Request, env: Env): Promise<Response> {
     if (!isRecord(body)) return failure("Request body must be a JSON object.", 400);
     const cartQuantityMatch = path.match(/^\/api\/v1\/cart\/([0-9a-f-]{36})\/items\/([0-9a-f-]{36})$/i);
     if (cartQuantityMatch && typeof body.quantity === "number" && Number.isInteger(body.quantity) && body.quantity >= 1) {
-      await pool.query(
+      const user = await currentUser(pool, env, request);
+      if (!user || user.role !== "CUSTOMER") return failure("Unauthorized", 401);
+      const customer = await pool.query(
+        `SELECT cp."id" FROM "CustomerProfile" cp WHERE cp."userId" = $1`,
+        [user.id],
+      );
+      if (!customer.rowCount) return failure("Customer profile not found", 404);
+      const result = await pool.query(
         `UPDATE "CartItem" ci SET "quantity" = $3, "updatedAt" = NOW()
          FROM "Cart" c
          WHERE ci."cartId" = c."id" AND c."storeId" = $1
-           AND ci."storeProductId" = $2`,
-        [cartQuantityMatch[1], cartQuantityMatch[2], body.quantity],
+           AND ci."storeProductId" = $2 AND c."customerId" = $4`,
+        [cartQuantityMatch[1], cartQuantityMatch[2], body.quantity, customer.rows[0].id],
       );
+      if (!result.rowCount) return failure("Cart item not found", 404);
       return success({ updated: true });
     }
   }
@@ -1011,13 +1051,21 @@ async function route(request: Request, env: Env): Promise<Response> {
   if (request.method === "DELETE") {
     const cartRemoveMatch = path.match(/^\/api\/v1\/cart\/([0-9a-f-]{36})\/items\/([0-9a-f-]{36})$/i);
     if (cartRemoveMatch) {
-      await pool.query(
+      const user = await currentUser(pool, env, request);
+      if (!user || user.role !== "CUSTOMER") return failure("Unauthorized", 401);
+      const customer = await pool.query(
+        `SELECT cp."id" FROM "CustomerProfile" cp WHERE cp."userId" = $1`,
+        [user.id],
+      );
+      if (!customer.rowCount) return failure("Customer profile not found", 404);
+      const result = await pool.query(
         `DELETE FROM "CartItem" ci
          USING "Cart" c
          WHERE ci."cartId" = c."id" AND c."storeId" = $1
-           AND ci."storeProductId" = $2`,
-        [cartRemoveMatch[1], cartRemoveMatch[2]],
+           AND ci."storeProductId" = $2 AND c."customerId" = $3`,
+        [cartRemoveMatch[1], cartRemoveMatch[2], customer.rows[0].id],
       );
+      if (!result.rowCount) return failure("Cart item not found", 404);
       return success({ removed: true });
     }
   }

@@ -7,7 +7,7 @@ These are synthetic accounts created by the guarded Prisma seed. They are for an
 | Role | Sign-in identifier | Notes |
 |---|---|---|
 | Super Admin | `admin@buyme.lk` | Password comes from `SEED_SUPER_ADMIN_PASSWORD`; staging demo OTP is required |
-| Store Admin | `manager.bm-s01@buyme.lk` through `manager.bm-s10@buyme.lk` | Password comes from `SEED_STORE_ADMIN_PASSWORD`; each account is assigned to its matching store |
+| Store Admin | `manager.bm-s01@buyme.lk` | Password comes from `SEED_STORE_ADMIN_PASSWORD`; assigned to the main store BM-S01 |
 | Rider | `+94771110001` or `rider.batti@buyme.lk` | Approved and assigned to the Batticaloa Town demo store |
 | Customer | `+94772220001` | Has a sample home address |
 
@@ -21,10 +21,10 @@ For all non-demo identities, OTP delivery remains provider-backed. Demo mode is 
 
 ## Safe setup order
 
-1. Provision an isolated staging PostgreSQL database and review the pending Prisma migration.
+1. Provision an isolated staging PostgreSQL database and review the pending Prisma migrations.
 2. Set `APP_ENV=staging`, `NODE_ENV=production`, `DEMO_OTP_ENABLED=true`, and a six-digit `DEMO_OTP_CODE` using the host's secret manager.
 3. Keep `OTP_DEV_MODE=false`; configure Firebase, private object storage, ClamAV, OSM contact email, CORS, and distinct JWT secrets as required by API validation.
-4. Set `ALLOW_DEMO_SEED=true` only for the one approved empty-database seed run, along with strong `SEED_SUPER_ADMIN_PASSWORD` and `SEED_STORE_ADMIN_PASSWORD` values.
-5. Disable/remove the seed opt-in immediately after the seed. Never run this seed against production.
+4. Run `apps/api/scripts/initialize-supabase-staging.ps1` from PowerShell. It securely prompts for the staging connection URI and strong demo admin passwords, then applies migrations and seeds BM-S01 only.
+5. Disable/remove the seed opt-in immediately after the seed. The seed currently creates only the main store, BM-S01. Never run it against production.
 
 This repository contains the additive migration and seed changes only. No Supabase project has been provisioned, and neither migration nor seed has been run against a hosted database.

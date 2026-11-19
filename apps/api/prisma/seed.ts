@@ -82,7 +82,7 @@ async function main() {
   ];
 
   const stores: any[] = [];
-  for (const s of storeData) {
+  for (const s of storeData.slice(0, 1)) {
     const store = await prisma.store.create({
       data: {
         code: s.code,
@@ -193,7 +193,7 @@ async function main() {
       });
     }
   }
-  console.log(`📦 Seeded sample products for warehouse and 10 stores.`);
+  console.log(`📦 Seeded sample products for warehouse and ${stores.length} store(s).`);
 
   // 6. Users: Super Admin (with argon2 hash and 2FA enabled)
   const superAdmin = await prisma.user.create({
@@ -231,7 +231,7 @@ async function main() {
       },
     });
   }
-  console.log(`👤 Seeded Super Admin (2FA enabled) & 10 Store Admins with argon2 passwords.`);
+  console.log(`👤 Seeded Super Admin (2FA enabled) & ${stores.length} Store Admin(s) with argon2 passwords.`);
 
   // Sample Approved Rider
   const riderUser = await prisma.user.create({
