@@ -1,0 +1,19 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "buyme-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-11-19",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"workers_dev": true,
+	"observability": {
+		"enabled": true
+	},
+	"hyperdrive": [
+		{
+			"binding": "HYPERDRIVE",
+			"id": "71c102d5f8b84def8a6bf55e273eae4c"
+		}
+	]
+}
