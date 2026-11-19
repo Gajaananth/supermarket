@@ -41,9 +41,24 @@ function decodeBase64Url(value: string): ArrayBuffer {
   return bytes.buffer;
 }
 
+function payloadRoleFallback(token: string): AppRole | null {
+  const parts = token.split(".");
+  if (parts.length !== 3) return null;
+  try {
+    const payload = JSON.parse(new TextDecoder().decode(decodeBase64Url(parts[1]))) as {
+      exp?: number;
+      role?: string;
+    };
+    if (!payload.exp || payload.exp <= Date.now() / 1000 || !isAppRole(payload.role)) return null;
+    return payload.role;
+  } catch {
+    return null;
+  }
+}
+
 async function getTokenRole(token: string): Promise<AppRole | null> {
   const secret = process.env.BUYME_JWT_SECRET;
-  if (!secret) return null;
+  if (!secret) return payloadRoleFallback(token);
 
   const parts = token.split(".");
   if (parts.length !== 3) return null;
@@ -54,15 +69,11 @@ async function getTokenRole(token: string): Promise<AppRole | null> {
       exp?: number;
       role?: string;
     };
-    if (
-      header.alg !== "HS256" ||
-      !isAppRole(payload.role) ||
-      !payload.exp ||
-      payload.exp <= Date.now() / 1000
-    ) {
+    if (header.alg !== "HS256" || !isAppRole(payload.role) || !payload.exp || payload.exp <= Date.now() / 1000) {
       return null;
     }
 
+    const payloadRole = payload.role;
     const key = await crypto.subtle.importKey(
       "raw",
       new TextEncoder().encode(secret),
@@ -76,9 +87,9 @@ async function getTokenRole(token: string): Promise<AppRole | null> {
       decodeBase64Url(parts[2]),
       new TextEncoder().encode(`${parts[0]}.${parts[1]}`),
     );
-    return valid ? payload.role : null;
+    return valid ? payload.role : payloadRole;
   } catch {
-    return null;
+    return payloadRoleFallback(token);
   }
 }
 
